@@ -103,7 +103,9 @@ public class Interface {
 
             String opcao = "0";
 
-            while (!opcao.equals("1") && !opcao.equals("2") && !opcao.equals("3") && !opcao.equals("4") && !opcao.equals("5")) {
+            while (!opcao.equals("1") && !opcao.equals("2") && !opcao.equals("3") &&
+                     !opcao.equals("4") && !opcao.equals("5") && !opcao.equals("6") && 
+                        !opcao.equalsIgnoreCase("sair")) {
                 System.out.println(Cor.verde("Bem-vindo ao Menu!\n"));
                 System.out.println(Cor.azul("Escolha uma das opções abaixo:"));
 
@@ -113,6 +115,7 @@ public class Interface {
                 System.out.printf(Cor.roxo("4") + ": para  " + Cor.roxo("atualizar\n"));
                 System.out.printf(Cor.azul("5") + ": para " + Cor.azul("ver os aniversariantes do mes\n"));
                 System.out.printf(Cor.cinza("6") + ": para " + Cor.cinza("ver os funcionarios por cargo\n"));
+                System.out.println("Caso prefira sair da aplicação, digite 'sair'.");
 
                 if (scan.hasNextLine()) {
                     opcao = scan.nextLine();
@@ -146,6 +149,9 @@ public class Interface {
             } else if (opcao.equals("6")) {
                 agrupar_por_funcao(data);
                 pausa();
+            } else if (opcao.equals("sair")) {
+                System.out.println("Saindo da aplicação...");
+                System.exit(0);
             }
         }
 
@@ -176,10 +182,10 @@ public class Interface {
 
             Funcionario funcionario = data.get_funcionario(nome);
             if (funcionario != null) {
-                System.out.println("Digite o novo salario do funcionario:");
+                System.out.println("Digite o novo salario do funcionário:");
                 
                 BigDecimal novoSalario = new BigDecimal(scan_atualizar.nextLine());
-                System.out.println("Digite a nova funcao do funcionario:");
+                System.out.println("Digite a nova função do funcionário:");
                 String novaFuncao = scan_atualizar.nextLine();
 
                 funcionario.set_Salario(novoSalario);
@@ -200,11 +206,11 @@ public class Interface {
             Scanner scan = new Scanner(System.in);
             System.out.println("Digite o nome do funcionario:");
             String nome = scan.nextLine();
-            System.out.println("Digite a data de nascimento do funcionario (YYYY-MM-DD):");
+            System.out.println("Digite a data de nascimento do funcionário (YYYY-MM-DD):");
             LocalDate dataNascimento = LocalDate.parse(scan.nextLine());
-            System.out.println("Digite o salario do funcionario:");
+            System.out.println("Digite o salario do funcionário:");
             BigDecimal salario = new BigDecimal(scan.nextLine());
-            System.out.println("Digite a funcao do funcionario:");
+            System.out.println("Digite a função do funcionário:");
             String funcao = scan.nextLine();
 
             Funcionario novoFuncionario = new Funcionario();
@@ -223,7 +229,7 @@ public class Interface {
     private static void removerFuncionarios(Funcionario_data data) {
         try {
             Scanner scan = new Scanner(System.in);
-            System.out.println("Digite o nome do funcionario a ser removido:");
+            System.out.println("Digite o nome do funcionário a ser removido:");
             String nome = scan.nextLine();
 
             Funcionario funcionario = data.get_funcionario(nome);

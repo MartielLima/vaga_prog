@@ -1,8 +1,28 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive",
-    "code-runner.executorMap": {
-        "java": "cmd /c cd $dir && mvn spring-boot:run"
+  "terminal.integrated.defaultProfile.windows": "Command Prompt",
+  "terminal.integrated.profiles.windows": {
+    "Command Prompt": {
+      "path": "C:\\Windows\\System32\\cmd.exe"
     },
-    "code-runner.runInTerminal": true,
-    "code-runner.clearPreviousOutput": true
+    "PowerShell": {
+      "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+    },
+    "Git Bash": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe"
+    }
+  },
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "code-runner.executorMap": {
+    "java": "cd $dir\\..\\..\\..\\..\\.. && mvn spring-boot:run"
+  },
+  "code-runner.runInTerminal": true,
+  "code-runner.clearPreviousOutput": true,
+  "terminal.integrated.env.windows": {
+    "MAVEN_HOME": "C:\\apache-maven-3.9.11",
+    "PATH": "C:\\apache-maven-3.9.11\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;${env:PATH}"
+  },
+  "code-runner.env.windows": {
+    "MAVEN_HOME": "C:\\apache-maven-3.9.11",
+    "PATH": "C:\\apache-maven-3.9.11\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;${env:PATH}"
+  }
 }
