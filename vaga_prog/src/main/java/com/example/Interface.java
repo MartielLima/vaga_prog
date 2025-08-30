@@ -1,18 +1,20 @@
 package com.example;
 
-import com.example.dados.Funcionario_data;
-import java.time.format.DateTimeFormatter;
-import java.sql.SQLException;
-import java.time.LocalDate;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.text.NumberFormat;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.time.Period;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
-import java.math.RoundingMode;
+import java.util.Scanner;
+import java.util.stream.Collectors;
+
+import com.example.dados.Funcionario_data;
 
 
 

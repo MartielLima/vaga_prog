@@ -1,3 +1,8 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "code-runner.executorMap": {
+        "java": "cmd /c cd $dir && mvn spring-boot:run"
+    },
+    "code-runner.runInTerminal": true,
+    "code-runner.clearPreviousOutput": true
 }
