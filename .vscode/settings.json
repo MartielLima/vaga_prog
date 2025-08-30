@@ -11,7 +11,7 @@
       "path": "C:\\Program Files\\Git\\bin\\bash.exe"
     }
   },
-  "java.configuration.updateBuildConfiguration": "interactive",
+  "java.configuration.updateBuildConfiguration": "automatic",
   "code-runner.executorMap": {
     "java": "cd $dir\\..\\..\\..\\..\\.. && mvn spring-boot:run"
   },
