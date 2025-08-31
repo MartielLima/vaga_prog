@@ -1,5 +1,6 @@
 package com.example.dados;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,14 +12,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.Funcionario;
+import com.example.model.Funcionario;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 public class Funcionario_data {
-    private Connection conexao;
+    private static Connection conexao;
+
+    public static Connection get_conexao() {
+        return conexao;
+    }
 
     public Funcionario_data(String caminho) throws SQLException {
         conexao = DriverManager.getConnection("jdbc:sqlite:" + caminho);
@@ -26,7 +31,6 @@ public class Funcionario_data {
     }
 
     private void criar_tabela() throws SQLException {
-
         String tabela = "funcionarios";
         ResultSet rs = conexao.createStatement().executeQuery(
             "SELECT name FROM sqlite_master WHERE type='table' AND name='" + tabela + "'"
@@ -63,7 +67,7 @@ public class Funcionario_data {
 
             InputStream input = getClass().getClassLoader().getResourceAsStream("funcionarios.json");
             if (input == null) {
-                throw new RuntimeException("Arquivo funcionarios.json não encontrado no classpath.");
+                throw new RuntimeException("Arquivo funcionarios.json não encontrado no caminho.");
             }
 
             List<Funcionario> funcionarios = mapper.readValue(
@@ -74,7 +78,7 @@ public class Funcionario_data {
             for (Funcionario f : funcionarios) {
                 inserir(f);
             }
-        } catch (Exception e) {
+        } catch (IOException | RuntimeException | SQLException e) {
             throw new SQLException("Erro ao carregar funcionários do JSON: " + e.getMessage(), e);
         }
     }
@@ -96,6 +100,7 @@ public class Funcionario_data {
         try (ResultSet rs = conexao.createStatement().executeQuery(sql)) {
             while (rs.next()) {
                 lista.add(new Funcionario(
+                    rs.getInt("id"),
                     rs.getBigDecimal("salario"),
                     rs.getString("funcao"),
                     rs.getString("nome"),
@@ -106,21 +111,22 @@ public class Funcionario_data {
         return lista;
     }
 
-    public void remover(Funcionario funcionario) throws SQLException {
-        String sql = "DELETE FROM funcionarios WHERE nome = ?";
+    public void remover(int id) throws SQLException {
+        String sql = "DELETE FROM funcionarios WHERE id = ?";
         try (PreparedStatement ps = conexao.prepareStatement(sql)) {
-            ps.setString(1, funcionario.get_Nome());
+            ps.setInt(1, id);
             ps.executeUpdate();
         }
     }
 
-    public Funcionario get_funcionario(String nome) throws SQLException {
-        String sql = "SELECT * FROM funcionarios WHERE nome = ?";
+    public Funcionario get_funcionario(int id) throws SQLException {
+        String sql = "SELECT * FROM funcionarios WHERE id = ?";
         try (PreparedStatement ps = conexao.prepareStatement(sql)) {
-            ps.setString(1, nome);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return new Funcionario(
+                    rs.getInt("id"),
                     rs.getBigDecimal("salario"),
                     rs.getString("funcao"),
                     rs.getString("nome"),
@@ -137,6 +143,7 @@ public class Funcionario_data {
         try (ResultSet rs = conexao.createStatement().executeQuery(sql)) {
             while (rs.next()) {
                 lista.add(new Funcionario(
+                    rs.getInt("id"),
                     rs.getBigDecimal("salario"),
                     rs.getString("funcao"),
                     rs.getString("nome"),
@@ -148,16 +155,20 @@ public class Funcionario_data {
     }
 
     public void atualizar(Funcionario f) throws SQLException {
-        String sql = "UPDATE funcionarios SET salario = ?, funcao = ? WHERE nome = ?";
+        String sql = "UPDATE funcionarios SET salario = ?, funcao = ? WHERE id = ?";
         try (PreparedStatement ps = conexao.prepareStatement(sql)) {
             ps.setBigDecimal(1, f.get_Salario());
             ps.setString(2, f.get_Funcao());
-            ps.setString(3, f.get_Nome());
+            ps.setInt(3, f.get_Id());
             ps.executeUpdate();
         }
     }
 
     public void fechar() throws SQLException {
         conexao.close();
+    }
+
+    public Connection getConexao() {
+        return conexao;
     }
 }

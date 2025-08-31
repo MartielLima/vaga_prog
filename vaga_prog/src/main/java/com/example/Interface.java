@@ -5,10 +5,13 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 import com.example.dados.Funcionario_data;
+import com.example.model.Funcionario;
 import com.example.util.Cor;
-import com.example.util.Crud;
 import com.example.util.Filtros;
 import com.example.util.Util;
+import com.example.util.crud.Crud;
+import com.example.util.crud.Delete;
+import com.example.util.crud.Read;
 
 
 
@@ -23,10 +26,11 @@ public class Interface {
 
         String opcao = "0";
 
-        while (!opcao.equals("1") && !opcao.equals("2")) {
+        while (!opcao.equals("1") && !opcao.equals("2") && !opcao.equals("3") && !opcao.equals("sair")) {
             System.out.println(Cor.azul("Escolha uma das opções abaixo:"));
             System.out.printf("%s: Caso prefira a demostração solicitada no teste selecione\n", Cor.ciano("1"));
-            System.out.printf("%s: Caso queria realizar interações\n", Cor.verde("2"));
+            System.out.printf("%s: Caso queria realizar interações\n", Cor.azul("2"));
+            System.out.printf("%s: Iniciar servidor WEB\n", Cor.verde("3"));
             System.out.printf("%s: Para sair\n", Cor.vermelho("sair"));
             System.out.printf(Cor.verde("> "));
             if (scan.hasNextLine()) {
@@ -43,6 +47,11 @@ public class Interface {
                 case "2" -> {
                     Util.clean();
                     interagir(data);
+                }
+                case "3" -> {
+                    Util.clean();
+                    System.out.println(Cor.amarelo("Funcionalidade em desenvolvimento."));
+                    // iniciarServidorWeb(data);
                 }
                 case "sair" -> {
                     Util.sair();
@@ -66,9 +75,10 @@ public class Interface {
 
             Crud.listarFuncionarios(data);
 
-            Funcionario joao = data.get_funcionario("João");
+            Funcionario joao = Read.get_funcionarioByName("João");
+
             if (joao != null) {
-                data.remover(joao);
+                data.remover(joao.get_Id());
                 System.out.println(Cor.verde("Listando todos os funcionários apos remover o João:"));
             } else {
                 System.out.println(Cor.vermelho("Funcionário João não encontrado."));
@@ -138,7 +148,7 @@ public class Interface {
                     Util.pausa();
                 }
                 case "3" -> {
-                    Crud.removerFuncionarios(data);
+                    Delete.removerFuncionariosByNome(data);
                     Util.pausa();
                 }
                 case "4" -> {

@@ -1,6 +1,6 @@
 # Comandos uteis para o jdk com o mavin
 
-### Devido a um bug do mavin com powershell usar CMD
+## Devido a um bug do mavin com powershell usar CMD
 
 ```shell
     # Comando para instalação de dependencias

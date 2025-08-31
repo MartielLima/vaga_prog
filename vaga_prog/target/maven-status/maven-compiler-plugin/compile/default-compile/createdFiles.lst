@@ -1,6 +1,10 @@
-com\example\Pessoa.class
+com\example\util\crud\Delete.class
+com\example\util\Filtros.class
+com\example\dados\Funcionario_data$1.class
+com\example\util\crud\Read.class
 com\example\Interface.class
 com\example\App.class
 com\example\dados\Funcionario_data.class
-com\example\dados\Funcionario_data$1.class
-com\example\Funcionario.class
+com\example\util\Cor.class
+com\example\util\Util.class
+com\example\util\crud\Crud.class

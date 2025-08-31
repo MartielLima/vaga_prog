@@ -3,16 +3,18 @@ package com.example.util;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.example.Funcionario;
 import com.example.dados.Funcionario_data;
+import com.example.model.Funcionario;
 
 public class Filtros {
     public static void agrupar_por_funcao(Funcionario_data data) {
@@ -88,7 +90,7 @@ public class Filtros {
                     .sorted(Comparator.comparing(Funcionario::get_Nome))
                     .collect(Collectors.toList());
 
-            System.out.println("Funcionários em ordem alfabética:");
+            System.out.println(Cor.verde("Funcionários em ordem alfabética:"));
             for (Funcionario f : funcionarios) {
                 System.out.println(" - " + f.get_Nome());
             }
@@ -100,9 +102,10 @@ public class Filtros {
 
     public static void total_de_salario(Funcionario_data data) {
         try {
+            NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
             double totalSalario = data.get_funcionarios().stream()
                     .mapToDouble(f -> f.get_Salario().doubleValue()).sum();
-            System.out.println("Total de salários: " + totalSalario);
+            System.out.println("Total de salários: " + format.format(totalSalario));
             System.out.println("\n\n");
         } catch (SQLException e) {
             System.out.println(Cor.vermelho("Erro ao calcular total de salários: " + e.getMessage()));

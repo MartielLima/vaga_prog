@@ -27,7 +27,9 @@
   },
   "java.compile.nullAnalysis.mode": "automatic",
   "cSpell.words": [
+    "alfabetica",
     "aniv",
+    "conexao",
     "funcao",
     "Funcao",
     "funcionario",
@@ -35,6 +37,8 @@
     "funcionarios",
     "Funcionarios",
     "joao",
-    "opcao"
+    "opcao",
+    "springframework",
+    "xerial"
   ]
 }
