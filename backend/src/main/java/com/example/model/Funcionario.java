@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Funcionario extends Pessoa {
-    private BigDecimal Salario;
-    private String Funcao;
+    private BigDecimal salario;
+    private String funcao;
 
     public Funcionario() {}
 
@@ -19,14 +19,14 @@ public class Funcionario extends Pessoa {
         @JsonProperty("Nome") String Nome,
         @JsonProperty("DataNascimento") LocalDate DataNascimento) {
         super(Nome, DataNascimento, id);
-        this.Salario = Salario;
-        this.Funcao = Funcao;
+        this.salario = Salario;
+        this.funcao = Funcao;
     }
 
 
-    public BigDecimal get_Salario() { return Salario; }
-    public void set_Salario(BigDecimal Salario) { this.Salario = Salario; }
+    public BigDecimal getSalario() { return salario; }
+    public void setSalario(BigDecimal Salario) { this.salario = Salario; }
 
-    public String get_Funcao() { return Funcao; }
-    public void set_Funcao(String Funcao) { this.Funcao = Funcao; }
+    public String getFuncao() { return funcao; }
+    public void setFuncao(String Funcao) { this.funcao = Funcao; }
 }

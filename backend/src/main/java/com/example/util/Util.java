@@ -6,7 +6,9 @@ import java.util.Scanner;
         public static void pausa() {
             System.out.println("Pressione ENTER para continuar...");
             try (Scanner scanner = new Scanner(System.in)) {
-                scanner.nextLine();
+                if (scanner.hasNextLine()) {
+                    scanner.nextLine();
+                }
             }
             System.out.println("Continuando o programa...");
         }

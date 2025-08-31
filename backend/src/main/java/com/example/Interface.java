@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import com.example.dados.Funcionario_data;
+import com.example.db.Funcionario_db;
 import com.example.model.Funcionario;
 import com.example.util.Cor;
 import com.example.util.Filtros;
@@ -13,10 +13,8 @@ import com.example.util.crud.Crud;
 import com.example.util.crud.Delete;
 import com.example.util.crud.Read;
 
-
-
 public class Interface {
-    public static void start(Funcionario_data data ) throws InterruptedException {
+    public static void start(String[] args) throws InterruptedException {
         Util.clean();
         System.out.println(Cor.verde("Bem-vindo a minha tentativa de realizar o desafio proposto!"));
         Thread.sleep(2000);
@@ -42,16 +40,25 @@ public class Interface {
             switch (opcao) {
                 case "1" -> {
                     Util.clean();
-                    seguir(data);
+                    try {
+                        seguir(new Funcionario_db("funcionarios.db"));
+                    } catch (SQLException e) {
+                        System.err.println("Erro ao conectar ao banco de dados: " + e.getMessage());
+                    }
                 }
                 case "2" -> {
                     Util.clean();
-                    interagir(data);
+                    try {
+                        interagir(new Funcionario_db("funcionarios.db"));
+                    } catch (SQLException e) {
+                        System.err.println("Erro ao conectar ao banco de dados: " + e.getMessage());
+                    }
                 }
                 case "3" -> {
                     Util.clean();
-                    System.out.println(Cor.amarelo("Funcionalidade em desenvolvimento."));
-                    // iniciarServidorWeb(data);
+                    
+                    Server server = new Server();
+                    server.start(args);
                 }
                 case "sair" -> {
                     Util.sair();
@@ -64,8 +71,8 @@ public class Interface {
         }
     }
 
-    public static void seguir(Funcionario_data data){
-        if (data == null) {
+    public static void seguir(Funcionario_db db){
+        if (db == null) {
             System.out.println(Cor.vermelho("Dados de funcionário não disponíveis."));
             return;
         }
@@ -73,104 +80,94 @@ public class Interface {
         try {
             System.out.println(Cor.verde("Listando todos os funcionários:"));
 
-            Crud.listarFuncionarios(data);
+            Crud.listarFuncionarios(db);
 
             Funcionario joao = Read.get_funcionarioByName("João");
 
             if (joao != null) {
-                data.remover(joao.get_Id());
+                db.remover(joao.getId());
                 System.out.println(Cor.verde("Listando todos os funcionários apos remover o João:"));
             } else {
                 System.out.println(Cor.vermelho("Funcionário João não encontrado."));
             }
 
-            Crud.listarFuncionarios(data);
+            Crud.listarFuncionarios(db);
 
-            Crud.aumentar_salario(data, new BigDecimal("10"), null);
+            Crud.aumentar_salario(db, new BigDecimal("10"), null);
 
-            Crud.listarFuncionarios(data);
+            Crud.listarFuncionarios(db);
 
-            Filtros.agrupar_por_funcao(data);
+            Filtros.agrupar_por_funcao(db);
 
-            Filtros.aniversariantes_do_mes(data, 10);
-            Filtros.aniversariantes_do_mes(data, 12);
+            Filtros.aniversariantes_do_mes(db, 10);
+            Filtros.aniversariantes_do_mes(db, 12);
 
-            Filtros.funcionario_mais_velho(data);
+            Filtros.funcionario_mais_velho(db);
 
-            Filtros.funcionarios_em_ordem_alfabetica(data);
+            Filtros.funcionarios_em_ordem_alfabetica(db);
 
-            Filtros.total_de_salario(data);
+            Filtros.total_de_salario(db);
 
-            Filtros.salario_minimo_por_funcionario(data, 1212.00);
+            Filtros.salario_minimo_por_funcionario(db, 1212.00);
 
             System.out.println(Cor.verde("Execução concluída com sucesso."));
 
-            data.fechar();
+            db.fechar();
         } catch (SQLException e) {
             System.out.println(Cor.vermelho("Erro ao acessar os dados: " + e.getMessage()));
         }
     }
 
-    public static void interagir(Funcionario_data data) throws InterruptedException {
+    public static void interagir(Funcionario_db db) throws InterruptedException {
+        Scanner scan = new Scanner(System.in);
+      
         while (true) {
             Util.clean();
-            Scanner scan = new Scanner(System.in);
 
             String opcao = "0";
 
-            while (!opcao.equals("1") && !opcao.equals("2") && !opcao.equals("3") &&
-                     !opcao.equals("4") && !opcao.equals("5") && !opcao.equals("6") && 
-                        !opcao.equalsIgnoreCase("sair")) {
-                System.out.println(Cor.verde("Bem-vindo ao Menu!\n"));
-                System.out.println(Cor.azul("Escolha uma das opções abaixo:"));
+            System.out.println(Cor.verde("Bem-vindo ao Menu!\n"));
+            System.out.println(Cor.azul("Escolha uma das opções abaixo:"));
 
-                System.out.printf(Cor.ciano("1") + ": para " + Cor.ciano("listar\n"));
-                System.out.printf(Cor.verde("2") + ": para " + Cor.verde("registrar\n"));
-                System.out.printf(Cor.vermelho("3") + ": para " + Cor.vermelho("remover\n"));
-                System.out.printf(Cor.roxo("4") + ": para  " + Cor.roxo("atualizar\n"));
-                System.out.printf(Cor.azul("5") + ": para " + Cor.azul("ver os aniversariantes do mes\n"));
-                System.out.printf(Cor.cinza("6") + ": para " + Cor.cinza("ver os funcionarios por cargo\n"));
-                System.out.println("Caso prefira sair da aplicação, digite 'sair'.");
+            System.out.printf(Cor.ciano("1") + ": para " + Cor.ciano("listar\n"));
+            System.out.printf(Cor.verde("2") + ": para " + Cor.verde("registrar\n"));
+            System.out.printf(Cor.vermelho("3") + ": para " + Cor.vermelho("remover\n"));
+            System.out.printf(Cor.roxo("4") + ": para  " + Cor.roxo("atualizar\n"));
+            System.out.printf(Cor.azul("5") + ": para " + Cor.azul("ver os aniversariantes do mes\n"));
+            System.out.printf(Cor.cinza("6") + ": para " + Cor.cinza("ver os funcionarios por cargo\n"));
+            System.out.println("Caso prefira sair da aplicação, digite 'sair'.");
 
-                if (scan.hasNextLine()) {
-                    opcao = scan.nextLine();
-                    scan.close();
-                } else {
-                    opcao = "";
-                }
-            }
+            opcao = scan.nextLine();            
 
             switch (opcao) {
                 case "1" -> {
-                    Crud.listarFuncionarios(data);
+                    Crud.listarFuncionarios(db);
                     Util.pausa();
                 }
                 case "2" -> {
-                    Crud.registrarFuncionarios(data);
+                    Crud.registrarFuncionarios(db);
                     Util.pausa();
                 }
                 case "3" -> {
-                    Delete.removerFuncionariosByNome(data);
+                    Delete.removerFuncionariosByNome(db);
                     Util.pausa();
                 }
                 case "4" -> {
-                    Crud.listarFuncionarios(data);
-                    Crud.atualizarFuncionarios(data);
+                    Crud.listarFuncionarios(db);
+                    Crud.atualizarFuncionarios(db);
                     Util.pausa();
                 }
                 case "5" -> {
-                    try (Scanner scan_aniv = new Scanner(System.in)) {
-                        System.out.println("Digite o mes para ver os aniversariantes:");
-                        String mes = "";
-                        if (scan_aniv.hasNextLine()) {
-                            mes = scan_aniv.nextLine();
-                        }
-                        Filtros.aniversariantes_do_mes(data, Integer.valueOf(mes));
-                        Util.pausa();
+                    System.out.println("Digite o mes para ver os aniversariantes:");
+                    String mes = "";
+                    if (scan.hasNextLine()) {
+                        mes = scan.nextLine();
                     }
+                    Filtros.aniversariantes_do_mes(db, Integer.valueOf(mes));
+                    Util.pausa();
                 }
                 case "6" -> {
-                    Filtros.agrupar_por_funcao(data);
+                    Filtros.agrupar_por_funcao(db);
                     Util.pausa();
                 }
                 case "sair" -> Util.sair();

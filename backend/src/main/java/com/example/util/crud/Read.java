@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-import com.example.dados.Funcionario_data;
+import com.example.db.Funcionario_db;
 import com.example.model.Funcionario;
 
 public class Read  {
@@ -14,7 +14,7 @@ public class Read  {
 
     static {
         try {
-            conexao = Funcionario_data.get_conexao();
+            conexao = Funcionario_db.get_conexao();
         } catch (Exception e) {
             System.err.println("Erro ao obter conexão: " + e.getMessage());
         }

@@ -13,20 +13,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.example.dados.Funcionario_data;
+import com.example.db.Funcionario_db;
 import com.example.model.Funcionario;
 
 public class Filtros {
-    public static void agrupar_por_funcao(Funcionario_data data) {
+    public static void agrupar_por_funcao(Funcionario_db db) {
         try {
-            Map<String, List<Funcionario>> funcionariosPorFuncao = data.get_funcionarios().stream()
-                    .collect(Collectors.groupingBy(Funcionario::get_Funcao));
+            Map<String, List<Funcionario>> funcionariosPorFuncao = db.get_funcionarios().stream()
+                    .collect(Collectors.groupingBy(Funcionario::getFuncao));
 
             System.out.println(Cor.verde("Funcionários agrupados por função:"));
             for (Map.Entry<String, List<Funcionario>> entry : funcionariosPorFuncao.entrySet()) {
                 System.out.println(Cor.azul("Função: " + entry.getKey()));
                 for (Funcionario f : entry.getValue()) {
-                    System.out.println(" - " + f.get_Nome());
+                    System.out.println(" - " + f.getNome());
                 }
             }
             System.out.println("\n\n");
@@ -35,7 +35,7 @@ public class Filtros {
         }
     }
 
-    public static void aniversariantes_do_mes(Funcionario_data data, Integer mes_niv) {
+    public static void aniversariantes_do_mes(Funcionario_db db, Integer mes_niv) {
         List<Funcionario> aniversariantes;
         int mes;
 
@@ -46,8 +46,8 @@ public class Filtros {
         }
 
         try {
-            aniversariantes = data.get_funcionarios().stream()
-                    .filter(f -> f.get_DataNascimento().getMonthValue() == mes)
+            aniversariantes = db.get_funcionarios().stream()
+                    .filter(f -> f.getDataNascimento().getMonthValue() == mes)
                     .collect(Collectors.toList());
 
             if (aniversariantes.isEmpty()) {
@@ -56,7 +56,7 @@ public class Filtros {
             } else {
                 System.out.println(Cor.verde("Funcionários que fazem aniversário no mês " + mes + ":"));
                 for (Funcionario f : aniversariantes) {
-                    System.out.println(" - " + f.get_Nome());
+                    System.out.println(" - " + f.getNome());
                 }
                 System.out.println("\n\n");
             }
@@ -65,15 +65,15 @@ public class Filtros {
         }
     }
 
-    public static void funcionario_mais_velho(Funcionario_data data) {
+    public static void funcionario_mais_velho(Funcionario_db db) {
         try {
-            Optional<Funcionario> funcionarioMaisVelho = data.get_funcionarios().stream()
-                    .max(Comparator.comparing(Funcionario::get_DataNascimento));
+            Optional<Funcionario> funcionarioMaisVelho = db.get_funcionarios().stream()
+                    .max(Comparator.comparing(Funcionario::getDataNascimento));
 
             if (funcionarioMaisVelho.isPresent()) {
                 System.out.println(Cor.verde("Funcionário mais velho:"));
-                System.out.println(" - Nome: " + funcionarioMaisVelho.get().get_Nome());
-                System.out.println(" - Data de Nascimento: " + funcionarioMaisVelho.get().get_DataNascimento());
+                System.out.println(" - Nome: " + funcionarioMaisVelho.get().getNome());
+                System.out.println(" - Data de Nascimento: " + funcionarioMaisVelho.get().getDataNascimento());
                 System.out.println("\n\n");
             } else {
                 System.out.println(Cor.vermelho("Nenhum funcionário encontrado."));
@@ -84,15 +84,15 @@ public class Filtros {
         }
     }
 
-    public static void funcionarios_em_ordem_alfabetica(Funcionario_data data) {
+    public static void funcionarios_em_ordem_alfabetica(Funcionario_db db) {
         try {
-            List<Funcionario> funcionarios = data.get_funcionarios().stream()
-                    .sorted(Comparator.comparing(Funcionario::get_Nome))
+            List<Funcionario> funcionarios = db.get_funcionarios().stream()
+                    .sorted(Comparator.comparing(Funcionario::getNome))
                     .collect(Collectors.toList());
 
             System.out.println(Cor.verde("Funcionários em ordem alfabética:"));
             for (Funcionario f : funcionarios) {
-                System.out.println(" - " + f.get_Nome());
+                System.out.println(" - " + f.getNome());
             }
             System.out.println("\n\n");
         } catch (SQLException e) {
@@ -100,11 +100,11 @@ public class Filtros {
         }
     }
 
-    public static void total_de_salario(Funcionario_data data) {
+    public static void total_de_salario(Funcionario_db db) {
         try {
             NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
-            double totalSalario = data.get_funcionarios().stream()
-                    .mapToDouble(f -> f.get_Salario().doubleValue()).sum();
+            double totalSalario = db.get_funcionarios().stream()
+                    .mapToDouble(f -> f.getSalario().doubleValue()).sum();
             System.out.println("Total de salários: " + format.format(totalSalario));
             System.out.println("\n\n");
         } catch (SQLException e) {
@@ -112,11 +112,11 @@ public class Filtros {
         }
     }
 
-    public static void salario_minimo_por_funcionario(Funcionario_data data, double salarioMinimo) {
+    public static void salario_minimo_por_funcionario(Funcionario_db db, double salarioMinimo) {
         try {
-            List<Funcionario> funcionarios = data.get_funcionarios();
+            List<Funcionario> funcionarios = db.get_funcionarios();
             for (Funcionario f : funcionarios) {
-                 System.out.println(f.get_Nome() + " - " + f.get_Funcao() + " - " + f.get_Salario().divide(BigDecimal.valueOf(salarioMinimo), 2, RoundingMode.HALF_UP) + " - " + f.get_DataNascimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                 System.out.println(f.getNome() + " - " + f.getFuncao() + " - " + f.getSalario().divide(BigDecimal.valueOf(salarioMinimo), 2, RoundingMode.HALF_UP) + " - " + f.getDataNascimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             }
             System.out.println("\n\n");
         } catch (SQLException e) {
