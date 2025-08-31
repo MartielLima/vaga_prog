@@ -1,7 +1,10 @@
+com\example\api\controller\Controller.class
 com\example\util\crud\Delete.class
+com\example\model\Pessoa.class
 com\example\util\Filtros.class
 com\example\dados\Funcionario_data$1.class
 com\example\util\crud\Read.class
+com\example\model\Funcionario.class
 com\example\Interface.class
 com\example\App.class
 com\example\dados\Funcionario_data.class

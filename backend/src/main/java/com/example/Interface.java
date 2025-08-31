@@ -103,6 +103,8 @@ public class Interface {
 
             Filtros.salario_minimo_por_funcionario(data, 1212.00);
 
+            System.out.println(Cor.verde("Execução concluída com sucesso."));
+
             data.fechar();
         } catch (SQLException e) {
             System.out.println(Cor.vermelho("Erro ao acessar os dados: " + e.getMessage()));
