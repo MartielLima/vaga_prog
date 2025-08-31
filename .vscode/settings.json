@@ -24,5 +24,17 @@
   "code-runner.env.windows": {
     "MAVEN_HOME": "C:\\apache-maven-3.9.11",
     "PATH": "C:\\apache-maven-3.9.11\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;${env:PATH}"
-  }
+  },
+  "java.compile.nullAnalysis.mode": "automatic",
+  "cSpell.words": [
+    "aniv",
+    "funcao",
+    "Funcao",
+    "funcionario",
+    "Funcionario",
+    "funcionarios",
+    "Funcionarios",
+    "joao",
+    "opcao"
+  ]
 }
