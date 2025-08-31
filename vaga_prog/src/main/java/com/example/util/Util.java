@@ -15,4 +15,9 @@ import java.util.Scanner;
             System.out.println("Saindo da aplicação...");
             System.exit(0);
         }
+        
+        public static void clean() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+        }
 }

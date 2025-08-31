@@ -13,7 +13,7 @@
   },
   "java.configuration.updateBuildConfiguration": "automatic",
   "code-runner.executorMap": {
-    "java": "cd $workspaceRoot\\vaga_prog && mvn spring-boot:run"
+    "java": "cls && cd $workspaceRoot\\vaga_prog && mvn spring-boot:run"
   },
   "code-runner.runInTerminal": true,
   "code-runner.clearPreviousOutput": true,

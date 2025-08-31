@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-import com.example.Cor;
 import com.example.Funcionario;
 import com.example.dados.Funcionario_data;
 
@@ -122,7 +121,7 @@ public class Crud {
                 data.atualizar(f);
             }
 
-            System.out.println("Todos os funcionários foram atualizados com sucesso.\n\n");
+            System.out.println(Cor.verde("Todos os funcionários foram atualizados com sucesso."));
         } catch (SQLException e) {
             System.out.println(Cor.vermelho("Erro ao aumentar salário: " + e.getMessage()));
         }

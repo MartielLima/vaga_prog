@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 import com.example.dados.Funcionario_data;
+import com.example.util.Cor;
 import com.example.util.Crud;
 import com.example.util.Filtros;
 import com.example.util.Util;
@@ -13,18 +14,21 @@ import com.example.util.Util;
 
 public class Interface {
     public static void start(Funcionario_data data ) throws InterruptedException {
-        Cor.clean();
+        Util.clean();
         System.out.println(Cor.verde("Bem-vindo a minha tentativa de realizar o desafio proposto!"));
         Thread.sleep(2000);
-        Cor.clean();
+        Util.clean();
 
         Scanner scan = new Scanner(System.in);
 
         String opcao = "0";
 
         while (!opcao.equals("1") && !opcao.equals("2")) {
-            System.out.printf("Caso prefira a demostração solicitada no teste selecione: %s %n", Cor.ciano("1"));
-            System.out.printf("Caso queria realizar interações: %s %n", Cor.verde("2"));
+            System.out.println(Cor.azul("Escolha uma das opções abaixo:"));
+            System.out.printf("%s: Caso prefira a demostração solicitada no teste selecione\n", Cor.ciano("1"));
+            System.out.printf("%s: Caso queria realizar interações\n", Cor.verde("2"));
+            System.out.printf("%s: Para sair\n", Cor.vermelho("sair"));
+            System.out.printf(Cor.verde("> "));
             if (scan.hasNextLine()) {
                 opcao = scan.nextLine();
             } else {
@@ -33,17 +37,21 @@ public class Interface {
 
             switch (opcao) {
                 case "1" -> {
-                    Cor.clean();
+                    Util.clean();
                     seguir(data);
                 }
                 case "2" -> {
-                    Cor.clean();
+                    Util.clean();
                     interagir(data);
+                }
+                case "sair" -> {
+                    Util.sair();
                 }
                 default -> System.out.println(Cor.vermelho("Opção inválida. Tente novamente."));
             }
 
             scan.close();
+            Util.clean();
         }
     }
 
@@ -93,7 +101,7 @@ public class Interface {
 
     public static void interagir(Funcionario_data data) throws InterruptedException {
         while (true) {
-            Cor.clean();
+            Util.clean();
             Scanner scan = new Scanner(System.in);
 
             String opcao = "0";

@@ -1,4 +1,4 @@
-package com.example;
+package com.example.util;
 
 public class Cor {
 
@@ -32,11 +32,6 @@ public class Cor {
 
     public static String cinza(String palavra) {
         return "\033[1;37m" + palavra + "\033[0m";
-    }
-
-    public static void clean() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
     }
 }
 

@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.example.Cor;
 import com.example.Funcionario;
 import com.example.dados.Funcionario_data;
 
@@ -21,8 +20,9 @@ public class Filtros {
             Map<String, List<Funcionario>> funcionariosPorFuncao = data.get_funcionarios().stream()
                     .collect(Collectors.groupingBy(Funcionario::get_Funcao));
 
+            System.out.println(Cor.verde("Funcionários agrupados por função:"));
             for (Map.Entry<String, List<Funcionario>> entry : funcionariosPorFuncao.entrySet()) {
-                System.out.println("Função: " + entry.getKey());
+                System.out.println(Cor.azul("Função: " + entry.getKey()));
                 for (Funcionario f : entry.getValue()) {
                     System.out.println(" - " + f.get_Nome());
                 }
@@ -49,10 +49,10 @@ public class Filtros {
                     .collect(Collectors.toList());
 
             if (aniversariantes.isEmpty()) {
-                System.out.println("Nenhum funcionário faz aniversário no mês " + mes + ".");
+                System.out.println(Cor.vermelho("Nenhum funcionário faz aniversário no mês " + mes + "."));
                 System.out.println("\n\n");
             } else {
-                System.out.println("Funcionários que fazem aniversário no mês " + mes + ":");
+                System.out.println(Cor.verde("Funcionários que fazem aniversário no mês " + mes + ":"));
                 for (Funcionario f : aniversariantes) {
                     System.out.println(" - " + f.get_Nome());
                 }
@@ -69,12 +69,12 @@ public class Filtros {
                     .max(Comparator.comparing(Funcionario::get_DataNascimento));
 
             if (funcionarioMaisVelho.isPresent()) {
-                System.out.println("Funcionário mais velho:");
+                System.out.println(Cor.verde("Funcionário mais velho:"));
                 System.out.println(" - Nome: " + funcionarioMaisVelho.get().get_Nome());
                 System.out.println(" - Data de Nascimento: " + funcionarioMaisVelho.get().get_DataNascimento());
                 System.out.println("\n\n");
             } else {
-                System.out.println("Nenhum funcionário encontrado.");
+                System.out.println(Cor.vermelho("Nenhum funcionário encontrado."));
                 System.out.println("\n\n");
             }
         } catch (SQLException e) {
