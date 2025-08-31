@@ -27,6 +27,7 @@ public class Filtros {
                     System.out.println(" - " + f.get_Nome());
                 }
             }
+            System.out.println("\n\n");
         } catch (SQLException e) {
             System.out.println(Cor.vermelho("Erro ao agrupar funcionários por função: " + e.getMessage()));
         }
@@ -49,11 +50,13 @@ public class Filtros {
 
             if (aniversariantes.isEmpty()) {
                 System.out.println("Nenhum funcionário faz aniversário no mês " + mes + ".");
+                System.out.println("\n\n");
             } else {
                 System.out.println("Funcionários que fazem aniversário no mês " + mes + ":");
                 for (Funcionario f : aniversariantes) {
                     System.out.println(" - " + f.get_Nome());
                 }
+                System.out.println("\n\n");
             }
         } catch (SQLException e) {
             System.out.println(Cor.vermelho("Erro ao listar aniversariantes do mês: " + e.getMessage()));
@@ -69,8 +72,10 @@ public class Filtros {
                 System.out.println("Funcionário mais velho:");
                 System.out.println(" - Nome: " + funcionarioMaisVelho.get().get_Nome());
                 System.out.println(" - Data de Nascimento: " + funcionarioMaisVelho.get().get_DataNascimento());
+                System.out.println("\n\n");
             } else {
                 System.out.println("Nenhum funcionário encontrado.");
+                System.out.println("\n\n");
             }
         } catch (SQLException e) {
             System.out.println(Cor.vermelho("Erro ao listar funcionário mais velho: " + e.getMessage()));
@@ -87,6 +92,7 @@ public class Filtros {
             for (Funcionario f : funcionarios) {
                 System.out.println(" - " + f.get_Nome());
             }
+            System.out.println("\n\n");
         } catch (SQLException e) {
             System.out.println(Cor.vermelho("Erro ao listar funcionários em ordem alfabética: " + e.getMessage()));
         }
@@ -97,6 +103,7 @@ public class Filtros {
             double totalSalario = data.get_funcionarios().stream()
                     .mapToDouble(f -> f.get_Salario().doubleValue()).sum();
             System.out.println("Total de salários: " + totalSalario);
+            System.out.println("\n\n");
         } catch (SQLException e) {
             System.out.println(Cor.vermelho("Erro ao calcular total de salários: " + e.getMessage()));
         }
@@ -108,6 +115,7 @@ public class Filtros {
             for (Funcionario f : funcionarios) {
                  System.out.println(f.get_Nome() + " - " + f.get_Funcao() + " - " + f.get_Salario().divide(BigDecimal.valueOf(salarioMinimo), 2, RoundingMode.HALF_UP) + " - " + f.get_DataNascimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             }
+            System.out.println("\n\n");
         } catch (SQLException e) {
             System.out.println(Cor.vermelho("Erro ao listar salários mínimos por funcionário: " + e.getMessage()));
         }
