@@ -1,5 +1,12 @@
 # Comandos para iniciar a aplicação
 
+Aplicação ainda em desenvolvimento, próximos passos:
+
+- mostrar erros / alertas no frontend
+- Apagar usuário
+- Cria atalho e função para auto cadastro de 1000 funcionarios
+- implementar filtros e relatórios solicitado no desafio
+
 ## Iniciar Backend
 
 ```shell
