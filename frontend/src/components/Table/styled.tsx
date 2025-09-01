@@ -5,7 +5,6 @@ export const Table = styled.table`
   border-collapse: collapse;
 
   font-size: 0.9rem;
-  border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 
