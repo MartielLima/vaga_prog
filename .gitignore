@@ -32,6 +32,7 @@ Thumbs.db
 *.sqlite3
 *.db
 *.db-journal
+funcionarios.db
 
 # -----------------------
 # React Native / Expo
@@ -52,3 +53,38 @@ coverage/
 *.temp
 *.swp
 *.swo
+
+# Pastas de build do Maven
+**/target/
+
+# Arquivos de configuração do IDE
+/.idea/
+/*.iml
+*.ipr
+*.iws
+
+# Eclipse
+/.project
+/.classpath
+/.settings/
+
+# NetBeans
+/nbproject/private/
+/build/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Logs
+*.log
+
+# Arquivos temporários
+*.tmp
+*.swp
+*.bak
+*.orig
+
+# Sistema
+.DS_Store
+Thumbs.db
