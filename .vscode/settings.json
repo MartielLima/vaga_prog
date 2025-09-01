@@ -13,7 +13,8 @@
   },
   "java.configuration.updateBuildConfiguration": "automatic",
   "code-runner.executorMap": {
-    "java": "cls && cd $workspaceRoot\\backend && mvn spring-boot:run"
+    "java": "cls && cd $workspaceRoot\\backend && mvn spring-boot:run",
+    "typescript": "cd $workspaceRoot\\frontend && bun run dev"
   },
   "code-runner.runInTerminal": true,
   "code-runner.clearPreviousOutput": true,
