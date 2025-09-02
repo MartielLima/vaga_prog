@@ -26,4 +26,15 @@ export const Table = styled.table`
   tbody tr:hover {
     background-color: #f1f1f1;
   }
+
+  .delete-button {
+    background: none;
+    border: none;
+    color: #fa4141;
+    cursor: pointer;
+
+    &:hover {
+      color: darken(#fa4141, 10%);
+    }
+  }
 `;

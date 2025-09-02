@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import {  Table } from './styled';
 import { FaPen } from "react-icons/fa";
+import { FaTrashCan } from "react-icons/fa6";
 import { useSearch } from '../../context/SearchContext';
-import Form from '../Form';
+import FormEditUser from '../Form/FormEditUser';
+import FormDeleteUser from '../Form/FormDeleteUser';
 
 
 type Funcionario = {
@@ -17,6 +19,7 @@ function TableComponent({ createId }: { createId: boolean }) {
   const [itensTabela, setItensTabela] = useState([] as Funcionario[]);
   const { search } = useSearch();
   const [editandoId, setEditandoId] = useState<number | null>(null);
+  const [deleteInfos, setDeleteInfos] = useState<{ id: number, name: string } | null>(null);
 
   const itensFiltrados = itensTabela.filter(item =>
     item.nome.toLowerCase().includes(search.toLowerCase())
@@ -29,14 +32,16 @@ function TableComponent({ createId }: { createId: boolean }) {
     };
 
   useEffect(() => {
-    if (editandoId === null || createId === false) {
+    if (editandoId === null || deleteInfos === null || createId === false || itensTabela.length === 0) {
       fetchData();
     }
-  }, [editandoId, createId]);
+  }, [editandoId, createId, itensTabela, deleteInfos]);
 
   useEffect(() => {
     fetchData();
   }, []);
+
+
 
   return (
     <>
@@ -49,19 +54,23 @@ function TableComponent({ createId }: { createId: boolean }) {
             <th>Salario</th>
             <th>Função</th>
             <th>Editar</th>
+            <th>Excluir</th>
           </tr>
         </thead>
         <tbody>
-          {itensFiltrados.map((item, index) => {
+          {itensFiltrados.map((person, index) => {
             return (
-              <tr key={item.id}>
+              <tr key={person.id}>
                 <td>{index + 1}</td>
-                <td>{item.nome}</td>
-                <td>{item.dataNascimento}</td>
-                <td>{item.salario.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
-                <td>{item.funcao}</td>
+                <td>{person.nome}</td>
+                <td>{person.dataNascimento}</td>
+                <td>{person.salario.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+                <td>{person.funcao}</td>
                 <td>
-                  <button onClick={() => setEditandoId(item.id)}><FaPen /></button>
+                  <button onClick={() => setEditandoId(person.id)}><FaPen /></button>
+                </td>
+                <td>
+                  <button className='delete-button' onClick={() => setDeleteInfos({id: person.id, name: person.nome})}><FaTrashCan /></button>
                 </td>
               </tr>
             );
@@ -69,7 +78,10 @@ function TableComponent({ createId }: { createId: boolean }) {
         </tbody>
       </Table>
       {editandoId && (
-        <Form id={editandoId} setEditandoId={setEditandoId} />
+        <FormEditUser id={editandoId} setEditandoId={setEditandoId} />
+      )}
+      {deleteInfos && (
+        <FormDeleteUser infos={deleteInfos} setDeleteInfos={setDeleteInfos} />
       )}
     </>
   );

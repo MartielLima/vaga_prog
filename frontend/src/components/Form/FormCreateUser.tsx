@@ -105,6 +105,7 @@ function FormCreateUser({ setCreateId }: { setCreateId: React.Dispatch<React.Set
         <input type="text" value={formData.funcao} onChange={(e) => setFormData({ ...formData, funcao: e.target.value })} />
 
         {error.length > 0 && <ErrorComponent error={error} />}
+
         <Buttons>
           <button type="submit">Salvar</button>
         </Buttons>

@@ -56,8 +56,6 @@ public class Funcionario_db {
             conexao.createStatement().execute(sql);
             carregar_funcionarios(conexao);
         }
-
-        
     }
 
     private void carregar_funcionarios(Connection conexao) throws SQLException {

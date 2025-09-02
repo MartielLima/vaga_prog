@@ -48,6 +48,12 @@ export const Form = styled.form`
       border: 1px solid #ccc;
       color: #555;
   }
+
+  div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
 `;
 
 export const Buttons = styled.div`
@@ -78,6 +84,39 @@ export const Buttons = styled.div`
 
       &:hover {
         background-color: #e53935;
+      }
+    }
+  }
+`;
+
+export const ButtonDelete = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+
+  button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.2s;
+
+    &[type="submit"] {
+      background-color: #f44336;
+      color: #fff;
+
+      &:hover {
+        background-color: #e53935;
+      }
+    }
+    
+    &[type="button"] {
+      background-color: #4CAF50;
+      color: #fff;
+  
+      &:hover {
+        background-color: #45a049;
       }
     }
   }

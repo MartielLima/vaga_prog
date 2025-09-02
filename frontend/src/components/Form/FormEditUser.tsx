@@ -88,6 +88,7 @@ function FormComponent({ id, setEditandoId }: { id: number, setEditandoId: React
         <Buttons>
           <button type="submit">Salvar</button>
         </Buttons>
+
       </Form>
     </Overlay>
   );
