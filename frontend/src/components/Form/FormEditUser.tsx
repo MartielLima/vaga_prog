@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react"
-import { Form, Overlay, Buttons } from "./styled"
+import { useState, useEffect } from "react";
+import { Form, Overlay, Buttons } from "./styled";
 import { IoMdClose } from "react-icons/io";
 import formatCurrency from "../../Util/formatCurrency";
+import { useError } from "../../context/ErrorContext";
+import type { AppError } from "../../context/type";
 
 function FormComponent({ id, setEditandoId }: { id: number, setEditandoId: React.Dispatch<React.SetStateAction<number | null>> }) {
+  const { errors, setErrors } = useError();
   const [valor, setValor] = useState("R$ 0,00");
   const [formData, setFormData] = useState({
     id: "",
@@ -12,12 +15,26 @@ function FormComponent({ id, setEditandoId }: { id: number, setEditandoId: React
     salario: 0,
     funcao: ""
   });
-  
+
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(`http://127.0.0.1:8085/${id}`);
-      const json = await response.json();
-      setFormData(json);
+      try {
+        const response = await fetch(`http://127.0.0.1:8085/${id}`);
+
+        if (!response.ok) {
+          const data: AppError = await response.json();
+          const newErrorList: AppError[] = [...errors, data]
+          setErrors(newErrorList);
+        } else {
+          const json = await response.json();
+          setFormData(json);
+        }
+
+      } catch (e) {
+        const newErrorList: AppError[] = [...errors, { message: "Erro ao deletar usuário:", infos: errors.toString() }]
+        setErrors(newErrorList);
+        return null;
+      }
     };
     fetchData();
   }, [id]);
@@ -56,9 +73,9 @@ function FormComponent({ id, setEditandoId }: { id: number, setEditandoId: React
       currency: 'BRL',
     });
 
-    setFormData({ 
-      ...formData, 
-      salario: numberValue 
+    setFormData({
+      ...formData,
+      salario: numberValue
     });
 
     setValor(formattedValue);

@@ -3,6 +3,8 @@ import { Form, Overlay, Buttons } from "./styled"
 import { IoMdClose } from "react-icons/io";
 import ErrorComponent from "../ErrorComponent";
 import CalculateAge from "../../Util/CalculateAge";
+import { useError } from "../../context/ErrorContext"
+import type { AppError } from "../../context/type"
 
 //{ id, setEditandoId }: { id: number, setEditandoId: React.Dispatch<React.SetStateAction<number | null>> }
 
@@ -13,17 +15,31 @@ function FormCreateUser({ setCreateId }: { setCreateId: React.Dispatch<React.Set
     salario: 0,
     funcao: ""
   });
-  const [error, setError] = useState<string[]>([]);
+  const [createUserError, setCreateUserError] = useState<string[]>([]);
   const [valor, setValor] = useState("R$ 0,00");
+  const { errors, setErrors } = useError();
 
   const setUserIntoDB = async (user: typeof formData) => {
-    await fetch(`http://127.0.0.1:8085/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(user)
-    });
+    try {
+      const response = await fetch(`http://127.0.0.1:8085/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(user)
+      });
+
+      if (!response.ok) {
+        const data: AppError = await response.json();
+        const newErrorList: AppError[] = [...errors, data]
+        setErrors(newErrorList);
+      }
+
+    } catch (e) {
+      const newErrorList: AppError[] = [...errors, { message: "Erro ao enviar usuário:", infos: errors.toString() }]
+      setErrors(newErrorList);
+      return null;
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -32,7 +48,7 @@ function FormCreateUser({ setCreateId }: { setCreateId: React.Dispatch<React.Set
     const newErrors: string[] = [];
 
     if (!formData.nome && !formData.dataNascimento && !formData.salario && !formData.funcao) {
-      setError(["Todos os campos são obrigatórios"]);
+      setCreateUserError(["Todos os campos são obrigatórios"]);
       return;
     }
 
@@ -55,7 +71,7 @@ function FormCreateUser({ setCreateId }: { setCreateId: React.Dispatch<React.Set
     });
 
     if (newErrors.length > 0) {
-      setError(newErrors);
+      setCreateUserError(newErrors);
       return;
     }
 
@@ -104,7 +120,7 @@ function FormCreateUser({ setCreateId }: { setCreateId: React.Dispatch<React.Set
         <label>Função</label>
         <input type="text" value={formData.funcao} onChange={(e) => setFormData({ ...formData, funcao: e.target.value })} />
 
-        {error.length > 0 && <ErrorComponent error={error} />}
+        {createUserError.length > 0 && <ErrorComponent error={createUserError} />}
 
         <Buttons>
           <button type="submit">Salvar</button>

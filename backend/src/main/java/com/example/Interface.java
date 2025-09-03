@@ -120,7 +120,7 @@ public class Interface {
 
     public static void interagir(Funcionario_db db) throws InterruptedException {
         Scanner scan = new Scanner(System.in);
-      
+
         while (true) {
             Util.clean();
 

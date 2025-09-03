@@ -1,13 +1,13 @@
-import { Error } from "./styled"
+import { ContainerError } from "./styled"
 
 function ErrorComponent({ error }: { error: string[] }) {
 
-    return (
-    <Error className="error-messages">
-            {error.map((err, index) => (
-              <p key={index}>{err}</p>
-            ))}
-    </Error>
+  return (
+    <ContainerError>
+      {error.map((err, index) => (
+        <p key={index}>{err}</p>
+      ))}
+    </ContainerError>
   );
 }
 

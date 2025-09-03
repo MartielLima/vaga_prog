@@ -12,6 +12,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.example.model.Funcionario;
 import com.example.util.crud.Read;
@@ -91,21 +93,21 @@ public class Funcionario_db {
 
         if (funcionarioExistente != null) {
             System.out.println("Funcionário já existe.");
-            return "Funcionário já existe.";
+            throw new Error("Funcionário já existe.");
         }
 
         if (f.getNome() == null || f.getNome().isBlank()) {
             System.out.println("Nome inválido.");
-            return "Nome inválido.";
+            throw new Error("Nome inválido.");
         } else if (f.getDataNascimento() == null) {
             System.out.println("Data de nascimento inválida.");
-            return "Data de nascimento inválida.";
+            throw new Error("Data de nascimento inválida.");
         } else if (f.getSalario() == null || f.getSalario().compareTo(BigDecimal.ZERO) <= 0) {
             System.out.println("Salário inválido.");
-            return "Salário inválido.";
+            throw new Error("Salário inválido.");
         } else if (f.getFuncao() == null || f.getFuncao().isBlank()) {
             System.out.println("Função inválida.");
-            return "Função inválida.";
+            throw new Error("Função inválida.");
         }
 
         String sql = "INSERT INTO funcionarios(nome, dataNascimento, salario, funcao) VALUES (?, ?, ?, ?)";
@@ -129,7 +131,6 @@ public class Funcionario_db {
         } catch (JsonProcessingException e) {
             throw new SQLException("Erro ao converter funcionário para JSON: " + e.getMessage(), e);
         }
-
         return json;
     }
 
@@ -154,7 +155,7 @@ public class Funcionario_db {
         Funcionario funcionario = get_funcionario(id);
         if (funcionario == null) {
             System.err.println("Funcionário não encontrado");
-            return "Funcionário não encontrado";
+            throw new SQLException("Funcionário não encontrado");
         }
 
         String sql = "DELETE FROM funcionarios WHERE id = ?";
@@ -211,10 +212,11 @@ public class Funcionario_db {
     }
 
     public String atualizar(Funcionario f) throws SQLException {
+        Map<String, String> resposta = new HashMap<>();
         Funcionario funcionarioExistente = get_funcionario(f.getId());
         if (funcionarioExistente == null) {
             System.err.println("Funcionário não encontrado");
-            return "Funcionário não encontrado";
+            throw new Error("Funcionário não encontrado");
         }
 
         String sql = "UPDATE funcionarios SET salario = ?, funcao = ? WHERE id = ?";
@@ -226,6 +228,7 @@ public class Funcionario_db {
             ps.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Erro ao atualizar funcionário: " + e.getMessage());
+            throw new Error("Erro ao atualizar funcionário: " + e.getMessage());
         }
 
         ObjectMapper mapper = new ObjectMapper();
@@ -237,7 +240,7 @@ public class Funcionario_db {
             json = mapper.writeValueAsString(get_funcionario(f.getId()));
         } catch (JsonProcessingException e) {
             System.err.println("Erro ao converter funcionário para JSON: " + e.getMessage());
-            return "Erro ao converter funcionário para JSON: " + e.getMessage();
+            throw new Error("Erro ao converter funcionário para JSON: " + e.getMessage());
         }
 
         return json;

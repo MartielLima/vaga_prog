@@ -1,10 +1,9 @@
 package com.example.api.controller;
 
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,95 +18,84 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.db.Funcionario_db;
 import com.example.model.Funcionario;
 import com.example.util.GerarFuncionarios;
+import com.example.util.SendMassage;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/")
 public class FuncionarioController {
-
     private Funcionario_db db;
+    
+    @Autowired
+    private ObjectMapper mapper;
 
-    // Fazer
-    public FuncionarioController() {
-        try {
-            this.db = new Funcionario_db("funcionarios.db");
-        } catch (SQLException e) {
-            System.err.println("Erro ao conectar ao banco de dados: " + e.getMessage());
-        }
-    }
-
-    // Fazer
     @GetMapping("/all")
-    public ResponseEntity<List<Funcionario>> listarFuncionarios() {
+    public ResponseEntity<String> listarFuncionarios() throws JsonProcessingException {
         try {
-            return ResponseEntity.ok(db.get_funcionarios());
+            if (this.db == null) {
+                    this.db = new Funcionario_db("funcionarios.db");
+            }
+            String json = mapper.writeValueAsString(db.get_funcionarios());
+            return ResponseEntity.ok(json);
         } catch (SQLException e) {
-            System.err.println("Erro ao listar funcionários: " + e.getMessage());
-            return ResponseEntity.status(500).body(List.of());
+            return ResponseEntity.status(500).body(SendMassage.SendErrorMassage("Erro ao listar funcionários: ", e.getMessage() + " " + List.of()));
         }
     }
 
-    // Fazer
     @GetMapping("/{id}")
-    public ResponseEntity<Funcionario> listarFuncionario(@PathVariable int id) {
+    public ResponseEntity<String> listarFuncionario(@PathVariable int id) throws JsonProcessingException {
         try {
             Funcionario funcionario = db.get_funcionario(id);
             if (funcionario != null) {
-                return ResponseEntity.ok(funcionario);
+                String json = mapper.writeValueAsString(funcionario);
+                return ResponseEntity.ok(json);
             } else {
-                return ResponseEntity.status(404).body(null);
+                throw new Error("A classe funcionario esta vazia!");
             }
         } catch (SQLException e) {
-            System.err.println("Erro ao listar funcionários: " + e.getMessage());
-            return ResponseEntity.status(500).body(null);
+            return ResponseEntity.status(500).body(SendMassage.SendErrorMassage("Erro ao listar funcionários:", e.getMessage()));
         }
     }
 
-    // Fazer
     @PostMapping
     public ResponseEntity<String> adicionarFuncionario(@RequestBody Funcionario funcionario) {
         try {
             String resultado = db.inserir(funcionario, this.db);
             return ResponseEntity.ok(resultado);
         } catch (SQLException e) {
-            System.err.println("Erro ao adicionar funcionário: " + e.getMessage());
-            return ResponseEntity.status(500).body("Erro ao adicionar funcionário.");
+            return ResponseEntity.status(500).body(SendMassage.SendErrorMassage("Erro ao adicionar funcionário:", e.getMessage()));
         }
     }
 
-    // Fazer
     @PutMapping("/{id}")
     public ResponseEntity<String> atualizarFuncionario(@PathVariable int id, @RequestBody Funcionario funcionario) {
         funcionario.setId(id);
         try {
             return ResponseEntity.ok(db.atualizar(funcionario));
         } catch (SQLException e) {
-            System.err.println("Erro ao atualizar funcionário: " + e.getMessage());
-            return ResponseEntity.status(500).body("Erro ao atualizar funcionário.");
+            return ResponseEntity.status(500).body(SendMassage.SendErrorMassage("Erro ao atualizar funcionário:", e.getMessage()));
         }
 
     }
 
-    // Fazer
     @DeleteMapping("/{id}")
     public ResponseEntity<String> removerFuncionario(@PathVariable int id) {
         try {
             return ResponseEntity.ok(db.remover(id));
         } catch (SQLException e) {
-            System.err.println("Erro ao remover funcionário: " + e.getMessage());
-            return ResponseEntity.status(500).body("Erro ao remover funcionário.");
+            return ResponseEntity.status(500).body(SendMassage.SendErrorMassage("Erro ao remover funcionário:", e.getMessage()));
         }
     }
 
-    // Ja feito
     @PostMapping("/cadastrarUsuarios")
     public ResponseEntity<String> cadastrarUsuarios() {
-        Map<String, String> response = new HashMap<>();
         try {
-            response = new GerarFuncionarios(this.db).gerar();
-            return ResponseEntity.ok(response.toString());
+            return ResponseEntity.ok(new GerarFuncionarios(this.db).gerar().toString());
         } catch (Error e) {
-            return ResponseEntity.status(500).body(e.getMessage());
+            return ResponseEntity.status(500).body(SendMassage.SendErrorMassage("Erro ao cadastrar os usuários:", e.getMessage()));
         }
     }
 }
