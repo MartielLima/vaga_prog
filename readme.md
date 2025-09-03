@@ -3,6 +3,7 @@
 Aplicação ainda em desenvolvimento, próximos passos:
 
 - mostrar erros / alertas no frontend
+    E nesscessario converter todas as resposta em um objeto, como iniciado no Gerar Funcionario, e retornar ao FrontEnd;
 - Cria atalho e função para auto cadastro de 1000 funcionarios
 - implementar filtros e relatórios solicitado no desafio
 

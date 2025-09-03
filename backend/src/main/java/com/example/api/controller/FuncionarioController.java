@@ -1,7 +1,9 @@
 package com.example.api.controller;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,13 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.db.Funcionario_db;
 import com.example.model.Funcionario;
+import com.example.util.GerarFuncionarios;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/")
 public class FuncionarioController {
+
     private Funcionario_db db;
 
+    // Fazer
     public FuncionarioController() {
         try {
             this.db = new Funcionario_db("funcionarios.db");
@@ -31,6 +36,7 @@ public class FuncionarioController {
         }
     }
 
+    // Fazer
     @GetMapping("/all")
     public ResponseEntity<List<Funcionario>> listarFuncionarios() {
         try {
@@ -41,6 +47,7 @@ public class FuncionarioController {
         }
     }
 
+    // Fazer
     @GetMapping("/{id}")
     public ResponseEntity<Funcionario> listarFuncionario(@PathVariable int id) {
         try {
@@ -56,6 +63,7 @@ public class FuncionarioController {
         }
     }
 
+    // Fazer
     @PostMapping
     public ResponseEntity<String> adicionarFuncionario(@RequestBody Funcionario funcionario) {
         try {
@@ -67,6 +75,7 @@ public class FuncionarioController {
         }
     }
 
+    // Fazer
     @PutMapping("/{id}")
     public ResponseEntity<String> atualizarFuncionario(@PathVariable int id, @RequestBody Funcionario funcionario) {
         funcionario.setId(id);
@@ -76,9 +85,10 @@ public class FuncionarioController {
             System.err.println("Erro ao atualizar funcionário: " + e.getMessage());
             return ResponseEntity.status(500).body("Erro ao atualizar funcionário.");
         }
-        
+
     }
 
+    // Fazer
     @DeleteMapping("/{id}")
     public ResponseEntity<String> removerFuncionario(@PathVariable int id) {
         try {
@@ -86,6 +96,18 @@ public class FuncionarioController {
         } catch (SQLException e) {
             System.err.println("Erro ao remover funcionário: " + e.getMessage());
             return ResponseEntity.status(500).body("Erro ao remover funcionário.");
+        }
+    }
+
+    // Ja feito
+    @PostMapping("/cadastrarUsuarios")
+    public ResponseEntity<String> cadastrarUsuarios() {
+        Map<String, String> response = new HashMap<>();
+        try {
+            response = new GerarFuncionarios(this.db).gerar();
+            return ResponseEntity.ok(response.toString());
+        } catch (Error e) {
+            return ResponseEntity.status(500).body(e.getMessage());
         }
     }
 }
