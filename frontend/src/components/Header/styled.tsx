@@ -24,10 +24,20 @@ export const Img = styled.img`
   margin-right: 20px;
 `;
 
-export const ImgContainer = styled.div`
+export const ButtonImg = styled.div`
   flex: 1;
-  display: flex;
-  align-items: center;
+  background: none;
+  border: none;
+  text-align: center;
+  color: #fff;
+  margin: 0 10px 0 0;
+  font-weight: bold;
+  font-size: 30px;
+
+  div {
+    display: flex;
+    align-items: center;
+  }
 `;
 
 export const ButtonContainer = styled.div`

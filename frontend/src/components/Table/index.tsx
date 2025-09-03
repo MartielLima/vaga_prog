@@ -5,18 +5,9 @@ import { FaTrashCan } from "react-icons/fa6";
 import { useSearch } from '../../context/SearchContext';
 import FormEditUser from '../Form/FormEditUser';
 import FormDeleteUser from '../Form/FormDeleteUser';
+import type { Funcionario } from './type';
 
-
-type Funcionario = {
-  id: number;
-  nome: string;
-  dataNascimento: string;
-  salario: number;
-  funcao: string;
-};
-
-function TableComponent({ createId }: { createId: boolean }) {
-  const [itensTabela, setItensTabela] = useState([] as Funcionario[]);
+function TableComponent({ createId, fetchData, itensTabela }: { createId: boolean, fetchData: Function, itensTabela: Funcionario[] }) {
   const { search } = useSearch();
   const [editandoId, setEditandoId] = useState<number | null>(null);
   const [deleteInfos, setDeleteInfos] = useState<{ id: number, name: string } | null>(null);
@@ -24,12 +15,6 @@ function TableComponent({ createId }: { createId: boolean }) {
   const itensFiltrados = itensTabela.filter(item =>
     item.nome.toLowerCase().includes(search.toLowerCase())
   );
-
-  const fetchData = async () => {
-      const response = await fetch('http://127.0.0.1:8085/all');
-      const json = await response.json();
-      setItensTabela(json);
-    };
 
   useEffect(() => {
     if (editandoId === null || deleteInfos === null || createId === false || itensTabela.length === 0) {
@@ -40,8 +25,6 @@ function TableComponent({ createId }: { createId: boolean }) {
   useEffect(() => {
     fetchData();
   }, []);
-
-
 
   return (
     <>
