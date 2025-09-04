@@ -18,8 +18,7 @@ public class Pessoa {
     
     @JsonCreator
     public Pessoa(@JsonProperty("Nome") String Nome,
-    @JsonProperty("DataNascimento") LocalDate DataNascimento,
-                  Integer id) {
+    @JsonProperty("DataNascimento") LocalDate DataNascimento, Integer id) {
         this.nome = Nome;
         this.dataNascimento = DataNascimento;
         this.id = id;

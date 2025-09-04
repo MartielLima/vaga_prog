@@ -14,16 +14,16 @@ import { ErrorDetail } from './components/ErrorScream';
 function App() {
   const [createId, setCreateId] = useState<boolean>(false);
   const [itensTabela, setItensTabela] = useState([] as Funcionario[]);
-  //const [detailIndex, setDetailIndex] = useState<number | null>(null);
+  const [detailIndex, setDetailIndex] = useState<number | null>(null);
   const { errors, setErrors } = useError();
 
   // const addError = (err: AppError) => {
   //   setErrors((prev) => [...prev, err]);
   // };
 
-  // const closeError = (index: number) => {
-  //   setErrors(prev => prev.filter((_, i) => i !== index));
-  // };
+  const closeError = (index: number) => {
+    setErrors(prev => prev.filter((_, i) => i !== index));
+  };
 
   const fetchData = async () => {
     try {
@@ -47,8 +47,8 @@ function App() {
   return (
     <ErrorProvider>
       <SearchProvider>
-        {/* <ErrorPopup errors={errors} onClose={closeError} onOpenDetail={(index) => setDetailIndex(index)} />
-        {detailIndex !== null && <ErrorDetail error={errors[detailIndex]} onClose={() => setDetailIndex(null)} />} */}
+        {errors.length !== 0 && <ErrorPopup errors={errors} onClose={closeError} onOpenDetail={(index) => setDetailIndex(index)} />}
+        {detailIndex !== null && <ErrorDetail error={errors[detailIndex]} onClose={() => setDetailIndex(null)} />}
         <Header setCreateId={setCreateId} fetchData={fetchData} />
         {createId && (
           <FormCreateUser setCreateId={setCreateId} />

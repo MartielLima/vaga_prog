@@ -27,17 +27,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RestController
 @RequestMapping("/")
 public class FuncionarioController {
-    private Funcionario_db db;
-    
     @Autowired
     private ObjectMapper mapper;
+
+    private Funcionario_db db;
+    private final GerarFuncionarios gerarFuncionarios = new GerarFuncionarios(mapper);
+    
+
+    private void connectDatabase() throws SQLException {
+        if (this.db == null) {
+            this.db = new Funcionario_db("funcionarios.db");
+            gerarFuncionarios.setDB(this.db);
+        }
+    }
 
     @GetMapping("/all")
     public ResponseEntity<String> listarFuncionarios() throws JsonProcessingException {
         try {
-            if (this.db == null) {
-                    this.db = new Funcionario_db("funcionarios.db");
-            }
+            this.connectDatabase();
             String json = mapper.writeValueAsString(db.get_funcionarios());
             return ResponseEntity.ok(json);
         } catch (SQLException e) {
@@ -48,6 +55,7 @@ public class FuncionarioController {
     @GetMapping("/{id}")
     public ResponseEntity<String> listarFuncionario(@PathVariable int id) throws JsonProcessingException {
         try {
+            this.connectDatabase();
             Funcionario funcionario = db.get_funcionario(id);
             if (funcionario != null) {
                 String json = mapper.writeValueAsString(funcionario);
@@ -63,6 +71,7 @@ public class FuncionarioController {
     @PostMapping
     public ResponseEntity<String> adicionarFuncionario(@RequestBody Funcionario funcionario) {
         try {
+            this.connectDatabase();
             String resultado = db.inserir(funcionario, this.db);
             return ResponseEntity.ok(resultado);
         } catch (SQLException e) {
@@ -74,6 +83,7 @@ public class FuncionarioController {
     public ResponseEntity<String> atualizarFuncionario(@PathVariable int id, @RequestBody Funcionario funcionario) {
         funcionario.setId(id);
         try {
+            this.connectDatabase();
             return ResponseEntity.ok(db.atualizar(funcionario));
         } catch (SQLException e) {
             return ResponseEntity.status(500).body(SendMassage.SendErrorMassage("Erro ao atualizar funcionário:", e.getMessage()));
@@ -84,6 +94,7 @@ public class FuncionarioController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> removerFuncionario(@PathVariable int id) {
         try {
+            this.connectDatabase();
             return ResponseEntity.ok(db.remover(id));
         } catch (SQLException e) {
             return ResponseEntity.status(500).body(SendMassage.SendErrorMassage("Erro ao remover funcionário:", e.getMessage()));
@@ -91,9 +102,10 @@ public class FuncionarioController {
     }
 
     @PostMapping("/cadastrarUsuarios")
-    public ResponseEntity<String> cadastrarUsuarios() {
+    public ResponseEntity<String> cadastrarUsuarios() throws JsonProcessingException, SQLException {
         try {
-            return ResponseEntity.ok(new GerarFuncionarios(this.db).gerar().toString());
+            this.connectDatabase();
+            return ResponseEntity.ok(gerarFuncionarios.gerar().toString());
         } catch (Error e) {
             return ResponseEntity.status(500).body(SendMassage.SendErrorMassage("Erro ao cadastrar os usuários:", e.getMessage()));
         }

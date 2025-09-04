@@ -12,12 +12,21 @@ import java.util.Random;
 
 import com.example.db.Funcionario_db;
 import com.example.model.Funcionario;
+import com.example.util.crud.Read;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+// @Component
 public class GerarFuncionarios {
 
-    Funcionario_db db;
+    private final ObjectMapper mapper;
+    private Funcionario_db db;
 
-    public GerarFuncionarios(Funcionario_db db) {
+    public GerarFuncionarios(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
+
+    public void setDB(Funcionario_db db) {
         this.db = db;
     }
 
@@ -64,21 +73,40 @@ public class GerarFuncionarios {
         return data;
     }
 
-    public Map<String, String> gerar() {
+    public Map<String, String> gerar() throws JsonProcessingException, SQLException {
+        List<Funcionario> funcionarios = db.get_funcionarios();
+        if (funcionarios.size() >= 900) {
+            throw  new Error(
+                "Ja existem mais de 900 funcionarios cadastrados. Devido a isto, não e possível criar mais funcionarios de forma automática!"
+            );
+        }
+
         List<String> messages = new ArrayList<>();
         int completed = 0;
         int erros = 0;
         Map<String, String> resposta = new HashMap<>();
 
-        for (int i = 0; i < 1200; i++) {
+        int index = 0;
+
+        while ( index < 1200) {
             String nome = NOMES[random.nextInt(NOMES.length)] + " " + SOBRENOMES[random.nextInt(SOBRENOMES.length)];
             LocalDate dataNascimento = gerarDataNascimento();
             BigDecimal salario = BigDecimal.valueOf(1500 + (random.nextDouble() * 20000));
             String funcao = FUNCOES[random.nextInt(FUNCOES.length)];
             Integer id = null;
 
-            Funcionario novoFuncionario = new Funcionario(id, salario, nome, funcao, dataNascimento);
+            Funcionario novoFuncionario = new Funcionario(id, salario, funcao, nome, dataNascimento);
+            Funcionario funcionarioSeExistir = null;
 
+            try {
+                funcionarioSeExistir = Read.get_funcionarioByName(novoFuncionario.getNome());
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+                messages.add("erro: " + e.getMessage());
+                erros++;
+            }
+            
+            if (funcionarioSeExistir != null) continue;
             try {
                 this.db.inserir(novoFuncionario, db);
                 messages.add(novoFuncionario.toString());
@@ -88,25 +116,29 @@ public class GerarFuncionarios {
                 messages.add("erro: " + e.getMessage());
                 erros++;
             }
+
+            index++;
         }
+
+        String massagesString = mapper.writeValueAsString(messages);
 
         if (erros != 0) {
             for (String message : messages) {
                 if (message.contains("erro")) {
-                    String ErrMens = "Ao todo foram cadastrados " + String.valueOf(completed) + " Porem constaram" + String.valueOf(erros) + "erros";
+                    String ErrMens = "Ao todo foram cadastrados: " + String.valueOf(completed) + " Porem constaram" + String.valueOf(erros) + "erros";
 
-                    resposta.put("mensagem", ErrMens);
-                    resposta.put("infos", messages.toString());
+                    resposta.put("mensagem", "error" );
+                    resposta.put("infos", ErrMens + " " + massagesString);
 
                     throw new Error(resposta.toString());
                 }
             }
         }
 
-        String SuccMens = " Ao todo foram cadastrados " + String.valueOf(completed);
+        String SuccMens = " Ao todo foram cadastrados: " + String.valueOf(completed);
 
         resposta.put("mensagem", "Success");
-        resposta.put("infos", SuccMens + messages.toString());
+        resposta.put("infos", SuccMens + " " + massagesString);
 
         return resposta;
     }
