@@ -21,23 +21,18 @@ function FormCreateUser({ setCreateId }: { setCreateId: React.Dispatch<React.Set
 
   const setUserIntoDB = async (user: typeof formData) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8085/`, {
+      await fetch(`http://127.0.0.1:8085/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(user)
       });
-
-      if (!response.ok) {
-        const data: AppError = await response.json();
-        const newErrorList: AppError[] = [...errors, data]
+    } catch (err) {
+      if (err instanceof Error) {
+        const newErrorList: AppError[] = [...errors, { message: "Erro ao enviar usuário:", infos: err.message }]
         setErrors(newErrorList);
       }
-
-    } catch (e) {
-      const newErrorList: AppError[] = [...errors, { message: "Erro ao enviar usuário:", infos: errors.toString() }]
-      setErrors(newErrorList);
       return null;
     }
   };
@@ -59,8 +54,6 @@ function FormCreateUser({ setCreateId }: { setCreateId: React.Dispatch<React.Set
         newErrors.push(`O campo ${key} é obrigatório`);
       }
 
-      console.log(key, value);
-
       if (key === "dataNascimento" && CalculateAge(String(value)) < 16) {
         newErrors.push(`O campo ${key} deve ser maior que 16 anos`);
       }
@@ -75,7 +68,6 @@ function FormCreateUser({ setCreateId }: { setCreateId: React.Dispatch<React.Set
       return;
     }
 
-    console.log(formData);
     setUserIntoDB(formData);
     setCreateId(false);
   };

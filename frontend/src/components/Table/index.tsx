@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import {  Table } from './styled';
+import { Table } from './styled';
 import { FaPen } from "react-icons/fa";
 import { FaTrashCan } from "react-icons/fa6";
 import { useSearch } from '../../context/SearchContext';
 import FormEditUser from '../Form/FormEditUser';
 import FormDeleteUser from '../Form/FormDeleteUser';
 import type { Funcionario } from './type';
+import usePrevious from '../../hooks/Previous';
 
 function TableComponent({ createId, fetchData, itensTabela }: { createId: boolean, fetchData: Function, itensTabela: Funcionario[] }) {
   const { search } = useSearch();
@@ -16,15 +17,26 @@ function TableComponent({ createId, fetchData, itensTabela }: { createId: boolea
     item.nome.toLowerCase().includes(search.toLowerCase())
   );
 
+
+  const prevEditandoId = usePrevious(editandoId);
+  const prevCreateId = usePrevious(createId);
+  const prevDeleteInfos = usePrevious(deleteInfos);
+
   useEffect(() => {
-    if (editandoId === null || deleteInfos === null || createId === false || itensTabela.length === 0) {
+    if (editandoId === null && prevEditandoId !== null) {
       fetchData();
     }
-  }, [editandoId, createId, itensTabela, deleteInfos]);
+    if (createId === false && prevCreateId !== false) {
+      fetchData();
+    }
+    if (deleteInfos === null && prevDeleteInfos !== null) {
+      fetchData();
+    }
+  }, [editandoId, createId, deleteInfos, fetchData, prevEditandoId, prevCreateId, prevDeleteInfos]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   return (
     <>
@@ -53,7 +65,7 @@ function TableComponent({ createId, fetchData, itensTabela }: { createId: boolea
                   <button onClick={() => setEditandoId(person.id)}><FaPen /></button>
                 </td>
                 <td>
-                  <button className='delete-button' onClick={() => setDeleteInfos({id: person.id, name: person.nome})}><FaTrashCan /></button>
+                  <button className='delete-button' onClick={() => setDeleteInfos({ id: person.id, name: person.nome })}><FaTrashCan /></button>
                 </td>
               </tr>
             );

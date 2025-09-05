@@ -2,6 +2,7 @@ package com.example.api.controller;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,17 +23,16 @@ import com.example.util.SendMassage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/")
 public class FuncionarioController {
+
     @Autowired
     private ObjectMapper mapper;
 
     private Funcionario_db db;
     private final GerarFuncionarios gerarFuncionarios = new GerarFuncionarios(mapper);
-    
 
     private void connectDatabase() throws SQLException {
         if (this.db == null) {
@@ -42,24 +42,24 @@ public class FuncionarioController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<String> listarFuncionarios() throws JsonProcessingException {
+    public ResponseEntity<Map<String, Object>> listarFuncionarios() throws JsonProcessingException {
         try {
             this.connectDatabase();
-            String json = mapper.writeValueAsString(db.get_funcionarios());
-            return ResponseEntity.ok(json);
+            Map<String, Object> response = SendMassage.SendSuccessMassage("funcionario", db.get_funcionarios());
+            return ResponseEntity.ok(response);
         } catch (SQLException e) {
             return ResponseEntity.status(500).body(SendMassage.SendErrorMassage("Erro ao listar funcionários: ", e.getMessage() + " " + List.of()));
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<String> listarFuncionario(@PathVariable int id) throws JsonProcessingException {
+    public ResponseEntity<Map<String, Object>> listarFuncionario(@PathVariable int id) throws JsonProcessingException {
         try {
             this.connectDatabase();
             Funcionario funcionario = db.get_funcionario(id);
             if (funcionario != null) {
-                String json = mapper.writeValueAsString(funcionario);
-                return ResponseEntity.ok(json);
+                Map<String, Object> response = SendMassage.SendSuccessMassage("funcionario", funcionario);
+                return ResponseEntity.ok(response);
             } else {
                 throw new Error("A classe funcionario esta vazia!");
             }
@@ -69,18 +69,17 @@ public class FuncionarioController {
     }
 
     @PostMapping
-    public ResponseEntity<String> adicionarFuncionario(@RequestBody Funcionario funcionario) {
+    public ResponseEntity<Map<String, Object>> adicionarFuncionario(@RequestBody Funcionario funcionario) {
         try {
             this.connectDatabase();
-            String resultado = db.inserir(funcionario, this.db);
-            return ResponseEntity.ok(resultado);
+            return ResponseEntity.ok(db.inserir(funcionario, this.db));
         } catch (SQLException e) {
             return ResponseEntity.status(500).body(SendMassage.SendErrorMassage("Erro ao adicionar funcionário:", e.getMessage()));
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> atualizarFuncionario(@PathVariable int id, @RequestBody Funcionario funcionario) {
+    public ResponseEntity<Map<String, Object>> atualizarFuncionario(@PathVariable int id, @RequestBody Funcionario funcionario) {
         funcionario.setId(id);
         try {
             this.connectDatabase();
@@ -92,7 +91,7 @@ public class FuncionarioController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> removerFuncionario(@PathVariable int id) {
+    public ResponseEntity<Map<String, Object>> removerFuncionario(@PathVariable int id) {
         try {
             this.connectDatabase();
             return ResponseEntity.ok(db.remover(id));
@@ -102,10 +101,10 @@ public class FuncionarioController {
     }
 
     @PostMapping("/cadastrarUsuarios")
-    public ResponseEntity<String> cadastrarUsuarios() throws JsonProcessingException, SQLException {
+    public ResponseEntity<Map<String, Object>> cadastrarUsuarios() throws JsonProcessingException, SQLException {
         try {
             this.connectDatabase();
-            return ResponseEntity.ok(gerarFuncionarios.gerar().toString());
+            return ResponseEntity.ok(gerarFuncionarios.gerar());
         } catch (Error e) {
             return ResponseEntity.status(500).body(SendMassage.SendErrorMassage("Erro ao cadastrar os usuários:", e.getMessage()));
         }

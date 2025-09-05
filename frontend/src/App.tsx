@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Header from './components/Header';
 import Table from './components/Table';
 import { SearchProvider } from './context/SearchContext';
+import { LoadProvider } from './context/LoadContext';
 import { ErrorProvider } from './context/ErrorContext';
 import FormCreateUser from './components/Form/FormCreateUser';
 import type { Funcionario } from './components/Table/type';
@@ -16,10 +17,6 @@ function App() {
   const [itensTabela, setItensTabela] = useState([] as Funcionario[]);
   const [detailIndex, setDetailIndex] = useState<number | null>(null);
   const { errors, setErrors } = useError();
-
-  // const addError = (err: AppError) => {
-  //   setErrors((prev) => [...prev, err]);
-  // };
 
   const closeError = (index: number) => {
     setErrors(prev => prev.filter((_, i) => i !== index));
@@ -37,9 +34,14 @@ function App() {
         const json = await response.json();
         setItensTabela(json);
       }
-    } catch (e) {
-      const newErrorList: AppError[] = [...errors, { message: "Erro ao deletar usuário:", infos: errors.toString() }]
-      setErrors(newErrorList);
+
+      console.log(errors)
+
+    } catch (err) {
+      if (err instanceof Error) {
+        const newErrorList: AppError[] = [...errors, { message: "Erro ao deletar usuário:", infos: err.message }]
+        setErrors(newErrorList);
+      }
       return null;
     }
   };
@@ -47,13 +49,15 @@ function App() {
   return (
     <ErrorProvider>
       <SearchProvider>
-        {errors.length !== 0 && <ErrorPopup errors={errors} onClose={closeError} onOpenDetail={(index) => setDetailIndex(index)} />}
-        {detailIndex !== null && <ErrorDetail error={errors[detailIndex]} onClose={() => setDetailIndex(null)} />}
-        <Header setCreateId={setCreateId} fetchData={fetchData} />
-        {createId && (
-          <FormCreateUser setCreateId={setCreateId} />
-        )}
-        <Table createId={createId} fetchData={fetchData} itensTabela={itensTabela} />
+        <LoadProvider>
+          {errors.length !== 0 && <ErrorPopup errors={errors} onClose={closeError} onOpenDetail={(index) => setDetailIndex(index)} />}
+          {detailIndex !== null && <ErrorDetail error={errors[detailIndex]} onClose={() => setDetailIndex(null)} />}
+          <Header setCreateId={setCreateId} fetchData={fetchData} />
+          {createId && (
+            <FormCreateUser setCreateId={setCreateId} />
+          )}
+          <Table createId={createId} fetchData={fetchData} itensTabela={itensTabela} />
+        </LoadProvider>
       </SearchProvider>
     </ErrorProvider>
   )

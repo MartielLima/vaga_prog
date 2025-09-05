@@ -24,8 +24,10 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.example.util.SendMassage;
 
 public class Funcionario_db {
+
     private static Connection conexao;
 
     public static Connection get_conexao() {
@@ -40,7 +42,7 @@ public class Funcionario_db {
     private void criar_tabela() throws SQLException {
         String tabela = "funcionarios";
         ResultSet rs = conexao.createStatement().executeQuery(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name='" + tabela + "'"
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='" + tabela + "'"
         );
 
         boolean tabelaExistia = rs.next();
@@ -76,8 +78,9 @@ public class Funcionario_db {
             }
 
             List<Funcionario> funcionarios = mapper.readValue(
-                input,
-                new TypeReference<List<Funcionario>>() {}
+                    input,
+                    new TypeReference<List<Funcionario>>() {
+            }
             );
 
             for (Funcionario f : funcionarios) {
@@ -88,7 +91,7 @@ public class Funcionario_db {
         }
     }
 
-    public String inserir(Funcionario f, Funcionario_db db) throws SQLException {
+    public Map<String, Object> inserir(Funcionario f, Funcionario_db db) throws SQLException {
         Funcionario funcionarioExistente = Read.get_funcionarioByName(f.getNome());
 
         if (funcionarioExistente != null) {
@@ -119,19 +122,10 @@ public class Funcionario_db {
             ps.executeUpdate();
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
         f.setId(null);
 
-        String json;
-        try {
-            json = mapper.writeValueAsString(f);
-        } catch (JsonProcessingException e) {
-            throw new SQLException("Erro ao converter funcionário para JSON: " + e.getMessage(), e);
-        }
-        return json;
+        Map<String, Object> response = SendMassage.SendSuccessMassage("funcionario", f);
+        return response;
     }
 
     public List<Funcionario> listar_todos() throws SQLException {
@@ -140,18 +134,18 @@ public class Funcionario_db {
         try (ResultSet rs = conexao.createStatement().executeQuery(sql)) {
             while (rs.next()) {
                 lista.add(new Funcionario(
-                    rs.getInt("id"),
-                    rs.getBigDecimal("salario"),
-                    rs.getString("funcao"),
-                    rs.getString("nome"),
-                    LocalDate.parse(rs.getString("dataNascimento"))
+                        rs.getInt("id"),
+                        rs.getBigDecimal("salario"),
+                        rs.getString("funcao"),
+                        rs.getString("nome"),
+                        LocalDate.parse(rs.getString("dataNascimento"))
                 ));
             }
         }
         return lista;
     }
 
-    public String remover(int id) throws SQLException {
+    public Map<String, Object> remover(int id) throws SQLException {
         Funcionario funcionario = get_funcionario(id);
         if (funcionario == null) {
             System.err.println("Funcionário não encontrado");
@@ -164,16 +158,8 @@ public class Funcionario_db {
             ps.executeUpdate();
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        String json;
-        try {
-            json = mapper.writeValueAsString(funcionario);
-        } catch (JsonProcessingException e) {
-            throw new SQLException("Erro ao converter funcionário para JSON: " + e.getMessage(), e);
-        }
-        return json;
+        Map<String, Object> response = SendMassage.SendSuccessMassage("funcionario", funcionario);
+        return response;
     }
 
     public Funcionario get_funcionario(int id) throws SQLException {
@@ -183,11 +169,11 @@ public class Funcionario_db {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return new Funcionario(
-                    rs.getInt("id"),
-                    rs.getBigDecimal("salario"),
-                    rs.getString("funcao"),
-                    rs.getString("nome"),
-                    LocalDate.parse(rs.getString("dataNascimento"))
+                        rs.getInt("id"),
+                        rs.getBigDecimal("salario"),
+                        rs.getString("funcao"),
+                        rs.getString("nome"),
+                        LocalDate.parse(rs.getString("dataNascimento"))
                 );
             }
         }
@@ -200,19 +186,18 @@ public class Funcionario_db {
         try (ResultSet rs = conexao.createStatement().executeQuery(sql)) {
             while (rs.next()) {
                 lista.add(new Funcionario(
-                    rs.getInt("id"),
-                    rs.getBigDecimal("salario"),
-                    rs.getString("funcao"),
-                    rs.getString("nome"),
-                    LocalDate.parse(rs.getString("dataNascimento"))
+                        rs.getInt("id"),
+                        rs.getBigDecimal("salario"),
+                        rs.getString("funcao"),
+                        rs.getString("nome"),
+                        LocalDate.parse(rs.getString("dataNascimento"))
                 ));
             }
         }
         return lista;
     }
 
-    public String atualizar(Funcionario f) throws SQLException {
-        Map<String, String> resposta = new HashMap<>();
+    public Map<String, Object> atualizar(Funcionario f) throws SQLException {
         Funcionario funcionarioExistente = get_funcionario(f.getId());
         if (funcionarioExistente == null) {
             System.err.println("Funcionário não encontrado");
@@ -220,7 +205,7 @@ public class Funcionario_db {
         }
 
         String sql = "UPDATE funcionarios SET salario = ?, funcao = ? WHERE id = ?";
-        
+
         try (PreparedStatement ps = conexao.prepareStatement(sql)) {
             ps.setBigDecimal(1, (f.getSalario() != null) ? f.getSalario() : funcionarioExistente.getSalario());
             ps.setString(2, (f.getFuncao() != null) ? f.getFuncao() : funcionarioExistente.getFuncao());
@@ -231,19 +216,8 @@ public class Funcionario_db {
             throw new Error("Erro ao atualizar funcionário: " + e.getMessage());
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        String json;
-        try {
-            json = mapper.writeValueAsString(get_funcionario(f.getId()));
-        } catch (JsonProcessingException e) {
-            System.err.println("Erro ao converter funcionário para JSON: " + e.getMessage());
-            throw new Error("Erro ao converter funcionário para JSON: " + e.getMessage());
-        }
-
-        return json;
+        Map<String, Object> response = SendMassage.SendSuccessMassage("funcionario", get_funcionario(f.getId()));
+        return response;
     }
 
     public void fechar() throws SQLException {

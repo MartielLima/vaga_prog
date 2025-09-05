@@ -1,10 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
-
-type SearchContextType = {
-  search: string;
-  setSearch: (value: string) => void;
-};
+import type { SearchContextType } from "./type";
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
@@ -18,6 +14,7 @@ export function SearchProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useSearch() {
   const context = useContext(SearchContext);
   if (!context) {

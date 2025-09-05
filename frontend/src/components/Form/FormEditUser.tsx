@@ -30,14 +30,16 @@ function FormComponent({ id, setEditandoId }: { id: number, setEditandoId: React
           setFormData(json);
         }
 
-      } catch (e) {
-        const newErrorList: AppError[] = [...errors, { message: "Erro ao deletar usuário:", infos: errors.toString() }]
-        setErrors(newErrorList);
+      } catch (err) {
+        if (err instanceof Error) {
+          const newErrorList: AppError[] = [...errors, { message: "Erro ao deletar usuário:", infos: err.message }]
+          setErrors(newErrorList);
+        }
         return null;
       }
     };
     fetchData();
-  }, [id]);
+  }, [id, errors, setErrors]);
 
   useEffect(() => {
     setValor(formatCurrency(formData.salario));

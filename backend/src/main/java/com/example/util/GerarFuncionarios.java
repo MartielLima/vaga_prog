@@ -73,22 +73,22 @@ public class GerarFuncionarios {
         return data;
     }
 
-    public Map<String, String> gerar() throws JsonProcessingException, SQLException {
+    public Map<String, Object> gerar() throws JsonProcessingException, SQLException {
         List<Funcionario> funcionarios = db.get_funcionarios();
         if (funcionarios.size() >= 900) {
-            throw  new Error(
-                "Ja existem mais de 900 funcionarios cadastrados. Devido a isto, não e possível criar mais funcionarios de forma automática!"
+            throw new Error(
+                    "Ja existem mais de 900 funcionarios cadastrados. Devido a isto, não e possível criar mais funcionarios de forma automática!"
             );
         }
 
         List<String> messages = new ArrayList<>();
         int completed = 0;
         int erros = 0;
-        Map<String, String> resposta = new HashMap<>();
+        Map<String, Object> resposta = new HashMap<>();
 
         int index = 0;
 
-        while ( index < 1200) {
+        while (index < 1200) {
             String nome = NOMES[random.nextInt(NOMES.length)] + " " + SOBRENOMES[random.nextInt(SOBRENOMES.length)];
             LocalDate dataNascimento = gerarDataNascimento();
             BigDecimal salario = BigDecimal.valueOf(1500 + (random.nextDouble() * 20000));
@@ -105,8 +105,10 @@ public class GerarFuncionarios {
                 messages.add("erro: " + e.getMessage());
                 erros++;
             }
-            
-            if (funcionarioSeExistir != null) continue;
+
+            if (funcionarioSeExistir != null) {
+                continue;
+            }
             try {
                 this.db.inserir(novoFuncionario, db);
                 messages.add(novoFuncionario.toString());
@@ -127,7 +129,7 @@ public class GerarFuncionarios {
                 if (message.contains("erro")) {
                     String ErrMens = "Ao todo foram cadastrados: " + String.valueOf(completed) + " Porem constaram" + String.valueOf(erros) + "erros";
 
-                    resposta.put("mensagem", "error" );
+                    resposta.put("mensagem", "error");
                     resposta.put("infos", ErrMens + " " + massagesString);
 
                     throw new Error(resposta.toString());

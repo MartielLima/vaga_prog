@@ -23,9 +23,11 @@ function FormComponent({ infos, setDeleteInfos }: {
         setErrors(newErrorList);
       }
 
-    } catch (e) {
-      const newErrorList: AppError[] = [...errors, { message: "Erro ao deletar usuário:", infos: errors.toString() }]
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+      const newErrorList: AppError[] = [...errors, { message: "Erro ao deletar usuário:", infos: err.message }]
       setErrors(newErrorList);
+      } 
       return null;
     }
   };
