@@ -6,33 +6,35 @@ import { useSearch } from '../../context/SearchContext';
 import FormEditUser from '../Form/FormEditUser';
 import FormDeleteUser from '../Form/FormDeleteUser';
 import type { Funcionario } from './type';
-import usePrevious from '../../hooks/Previous';
 
-function TableComponent({ createId, fetchData, itensTabela }: { createId: boolean, fetchData: Function, itensTabela: Funcionario[] }) {
+// TODO concertar rota por rota, furmulario por formulario, a nova forma de output quebreou o app
+
+function TableComponent({ createId, fetchData, itensTabela }: { createId: boolean, fetchData: () => void, itensTabela: Funcionario[] }) {
   const { search } = useSearch();
   const [editandoId, setEditandoId] = useState<number | null>(null);
   const [deleteInfos, setDeleteInfos] = useState<{ id: number, name: string } | null>(null);
+
+  const [previousValue, setPreviousValue] = useState<{ [key: string]: unknown }>({})
 
   const itensFiltrados = itensTabela.filter(item =>
     item.nome.toLowerCase().includes(search.toLowerCase())
   );
 
-
-  const prevEditandoId = usePrevious(editandoId);
-  const prevCreateId = usePrevious(createId);
-  const prevDeleteInfos = usePrevious(deleteInfos);
-
   useEffect(() => {
-    if (editandoId === null && prevEditandoId !== null) {
+    if (previousValue.editandoId !== editandoId) {
+      setPreviousValue({ ...previousValue, editandoId: editandoId })
       fetchData();
     }
-    if (createId === false && prevCreateId !== false) {
+    if (previousValue.createId !== createId) {
+      setPreviousValue({ ...previousValue, createId: createId })
       fetchData();
     }
-    if (deleteInfos === null && prevDeleteInfos !== null) {
+    if (previousValue.deleteInfos !== deleteInfos) {
+      setPreviousValue({ ...previousValue, deleteInfos: deleteInfos })
       fetchData();
     }
-  }, [editandoId, createId, deleteInfos, fetchData, prevEditandoId, prevCreateId, prevDeleteInfos]);
+
+  }, [editandoId, createId, deleteInfos, fetchData, previousValue]);
 
   useEffect(() => {
     fetchData();

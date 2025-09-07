@@ -11,6 +11,10 @@ import type { AppError } from "./context/type";
 import { ErrorPopup } from './components/ErrorScream/ErrorPop-up';
 import { ErrorDetail } from './components/ErrorScream';
 
+export type ResponseToJSONPropsGetAll = {
+  funcionario: Funcionario[]
+  status: string
+}
 
 function App() {
   const [createId, setCreateId] = useState<boolean>(false);
@@ -30,12 +34,11 @@ function App() {
         const data: AppError = await response.json();
         const newErrorList: AppError[] = [...errors, data]
         setErrors(newErrorList);
-      } else {
-        const json = await response.json();
-        setItensTabela(json);
-      }
 
-      console.log(errors)
+      } else {
+        const json: ResponseToJSONPropsGetAll = await response.json();
+        setItensTabela(json.funcionario);
+      }
 
     } catch (err) {
       if (err instanceof Error) {

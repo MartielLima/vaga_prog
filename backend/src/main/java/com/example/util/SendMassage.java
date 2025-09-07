@@ -17,7 +17,6 @@ public class SendMassage {
         Map<String, Object> response = new HashMap<>();
         response.put("status", "success");
         response.put(title, addInfo);
-        System.err.println(title + " " + addInfo);
         return response;
     }
 }

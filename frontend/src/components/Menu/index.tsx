@@ -16,17 +16,15 @@ export default function RightMenu({ open, toggleMenu }: { open: boolean, toggleM
                 }
             });
 
-            // const jsonData = await response.json()
             const textData = await response.text()
 
             if (response.status !== 200) {
                 console.log("jsonData")
-                // console.log(jsonData)
+                // console.log(jsonData) //TODO remover
                 console.log("textData")
                 console.log(textData)
             }
         } catch (err) {
-            console.log(err.message)
             if (err instanceof Error) {
                 const newErrorList: AppError[] = [...errors, { message: "Erro ao enviar usuário:", infos: err.message }]
                 setErrors(newErrorList);

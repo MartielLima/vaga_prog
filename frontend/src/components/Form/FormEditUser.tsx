@@ -4,12 +4,14 @@ import { IoMdClose } from "react-icons/io";
 import formatCurrency from "../../Util/formatCurrency";
 import { useError } from "../../context/ErrorContext";
 import type { AppError } from "../../context/type";
+import type { ResponseToJSONProps } from "./type";
+import type { Funcionario } from "../Table/type";
 
 function FormComponent({ id, setEditandoId }: { id: number, setEditandoId: React.Dispatch<React.SetStateAction<number | null>> }) {
   const { errors, setErrors } = useError();
   const [valor, setValor] = useState("R$ 0,00");
-  const [formData, setFormData] = useState({
-    id: "",
+  const [formData, setFormData] = useState<Funcionario>({
+    id: 0,
     nome: "",
     dataNascimento: "",
     salario: 0,
@@ -26,8 +28,9 @@ function FormComponent({ id, setEditandoId }: { id: number, setEditandoId: React
           const newErrorList: AppError[] = [...errors, data]
           setErrors(newErrorList);
         } else {
-          const json = await response.json();
-          setFormData(json);
+          const json: ResponseToJSONProps = await response.json();
+          console.log(json.funcionario)
+          setFormData(json.funcionario);
         }
 
       } catch (err) {
