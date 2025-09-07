@@ -8,6 +8,8 @@ type Props = {
     onOpenDetail: (index: number) => void;
 };
 
+// TODO Subindo, porem modificar o style, das caixar, ficou generico
+
 export const ErrorPopup: React.FC<Props> = ({ errors, onClose, onOpenDetail }) => {
     if (errors.length === 0) return null;
 

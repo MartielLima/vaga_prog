@@ -7,8 +7,6 @@ import FormEditUser from '../Form/FormEditUser';
 import FormDeleteUser from '../Form/FormDeleteUser';
 import type { Funcionario } from './type';
 
-// TODO concertar rota por rota, furmulario por formulario, a nova forma de output quebreou o app
-
 function TableComponent({ createId, fetchData, itensTabela }: { createId: boolean, fetchData: () => void, itensTabela: Funcionario[] }) {
   const { search } = useSearch();
   const [editandoId, setEditandoId] = useState<number | null>(null);

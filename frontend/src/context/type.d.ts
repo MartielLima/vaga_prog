@@ -1,9 +1,9 @@
 import type React from "react"
 
 export type AppError = {
-    message: string,
-    infos: string
-}
+    [key: string]: string,
+    [key: string]: string
+}    
 
 export type ErrorContextType = {
     errors: AppError[];

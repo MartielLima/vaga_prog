@@ -3,6 +3,8 @@ import OutsideClick from "../../hooks/OutsideClick";
 import type { AppError } from "../../context/type";
 import { useError } from "../../context/ErrorContext"
 
+
+
 export default function RightMenu({ open, toggleMenu }: { open: boolean, toggleMenu: () => void }) {
     const { errors, setErrors } = useError();
     const ref = OutsideClick(toggleMenu);
@@ -16,13 +18,9 @@ export default function RightMenu({ open, toggleMenu }: { open: boolean, toggleM
                 }
             });
 
-            const textData = await response.text()
-
-            if (response.status !== 200) {
-                console.log("jsonData")
-                // console.log(jsonData) //TODO remover
-                console.log("textData")
-                console.log(textData)
+            if (!response.ok) {
+                const data: AppError = await response.json();
+                setErrors(prev => [...prev, data]);
             }
         } catch (err) {
             if (err instanceof Error) {
