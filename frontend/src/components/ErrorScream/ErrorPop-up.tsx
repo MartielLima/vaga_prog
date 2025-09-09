@@ -3,27 +3,31 @@ import type { AppError } from "../../context/type";
 import { PopupContainer } from "./styled";
 
 type Props = {
-    errors: AppError[];
-    onClose: (index: number) => void;
-    onOpenDetail: (index: number) => void;
+    error: AppError | null;
+    onOpenDetail: (error: AppError) => void;
+    setViewError: (val: AppError | null) => void;
+    setShowPopup: (val: boolean) => void;
 };
 
-// TODO Subindo, porem modificar o style, das caixar, ficou generico
+export const ErrorPopup: React.FC<Props> = ({ error, onOpenDetail, setViewError, setShowPopup }) => {
+    if (!error) return null;
 
-export const ErrorPopup: React.FC<Props> = ({ errors, onClose, onOpenDetail }) => {
-    if (errors.length === 0) return null;
+    const errorTitle = error.infos.split(":")[0];
 
-    const lastErrorIndex = errors.length - 1;
-    const error = errors[lastErrorIndex];
+    const handleOnClick = () => {
+        setShowPopup(false)
+        onOpenDetail(error)
+        setViewError(null)
+    }
 
     return (
         <PopupContainer>
             <div>
-                <strong>Erro:</strong> {error.message}
+                {errorTitle ? errorTitle : <strong>Erro</strong>}
             </div>
             <div className="actions">
-                <span onClick={() => onOpenDetail(lastErrorIndex)}>Ver detalhes</span>|
-                <span onClick={() => onClose(lastErrorIndex)}>Fechar</span>
+                <span onClick={handleOnClick}>Ver detalhes</span>|
+                <span onClick={() => setViewError(null)}>Fechar</span>
             </div>
         </PopupContainer>
     );

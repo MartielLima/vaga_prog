@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 export const PopupContainer = styled.div` 
   position: fixed;
-  top: 10px;
-  left: 10px;
+  top: 80px;
+  left: 5px;
   background: rgba(255, 0, 0, 0.9);
   color: #fff;
   padding: 10px 15px;
@@ -33,7 +33,7 @@ export const Overlay = styled.div`
   z-index: 9998;
 
   .container {
-    background: #fff;
+    background: #ffd4d4;
     padding: 20px;
     border-radius: 8px;
     max-width: 600px;
@@ -41,5 +41,20 @@ export const Overlay = styled.div`
     max-height: 80%;
     overflow-y: auto;
   }
+
+  .message {
+    padding: 10px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    background-color: #e2bcbc;
+    border-radius: 3px;
+    border: #c7a4a4 1px solid;
+  }
+
+  button {
+    padding: 6px 0 0 0;
+  }
 `;
 
+// dbdbdb

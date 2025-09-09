@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Header from './components/Header';
 import Table from './components/Table';
 import FormCreateUser from './components/Form/FormCreateUser';
@@ -16,12 +16,14 @@ export type ResponseToJSONPropsGetAll = {
 function App() {
   const [createId, setCreateId] = useState<boolean>(false);
   const [itensTabela, setItensTabela] = useState([] as Funcionario[]);
-  const [detailIndex, setDetailIndex] = useState<number | null>(null);
+  const [detailError, setDetailError] = useState<AppError | null>(null);
+  const [viewError, setViewError] = useState<AppError | null>(null);
+  const [showPopup, setShowPopup] = useState(false);
   const { errors, setErrors } = useError();
 
-  const closeError = (index: number) => {
+  const deleteError = useCallback((index: number) => {
     setErrors(prev => prev.filter((_, i) => i !== index));
-  };
+  }, [setErrors])
 
   const fetchData = async () => {
     try {
@@ -45,22 +47,33 @@ function App() {
     }
   };
 
-  return (
+  useEffect(() => {
+    if (errors.length > 0) {
+      const lastErrorIndex = errors.length - 1;
+      setViewError(errors[lastErrorIndex]);
+      deleteError(lastErrorIndex);
+      setShowPopup(true)
+    };
+  }, [errors, setViewError, deleteError, setShowPopup])
 
+  return (
     <>
-      {detailIndex !== null && (
-        <ErrorDetail error={errors[detailIndex]} onClose={() => setDetailIndex(null)} />
+      {detailError !== null && (
+        <ErrorDetail error={detailError} onClose={() => setDetailError(null)} />
       )}
       <Header setCreateId={setCreateId} fetchData={fetchData} />
       {createId && (
         <FormCreateUser setCreateId={setCreateId} />
       )}
-      {errors.length > 0 && (
-        <ErrorPopup
-          errors={errors}
-          onClose={closeError}
-          onOpenDetail={(index) => setDetailIndex(index)}
-        />
+      {showPopup && (
+        <>
+          <ErrorPopup
+            error={viewError}
+            setViewError={setViewError}
+            setShowPopup={setShowPopup}
+            onOpenDetail={(index) => setDetailError(index)}
+          />
+        </>
       )}
       <Table createId={createId} fetchData={fetchData} itensTabela={itensTabela} />
     </>
