@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Header from './components/Header';
 import Table from './components/Table';
 import FormCreateUser from './components/Form/FormCreateUser';
@@ -13,23 +13,17 @@ export type ResponseToJSONPropsGetAll = {
   status: string
 }
 
-// TODO continuar a logica para melhor fucionamento do Error popup
-
 function App() {
   const [createId, setCreateId] = useState<boolean>(false);
   const [itensTabela, setItensTabela] = useState([] as Funcionario[]);
-  const [detailIndex, setDetailIndex] = useState<number | null>(null);
-  const { viewError, setViewError } = useState<AppError | null>(null);
-  const { showPopup, setShowPopup } = useState(false);
+  const [detailError, setDetailError] = useState<AppError | null>(null);
+  const [viewError, setViewError] = useState<AppError | null>(null);
+  const [showPopup, setShowPopup] = useState(false);
   const { errors, setErrors } = useError();
 
-  const closeError = (index: number) => {
+  const deleteError = useCallback((index: number) => {
     setErrors(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const deleteError = (index: number) => {
-    setErrors(prev => prev.filter((_, i) => i !== index));
-  };
+  }, [setErrors])
 
   const fetchData = async () => {
     try {
@@ -58,26 +52,26 @@ function App() {
       const lastErrorIndex = errors.length - 1;
       setViewError(errors[lastErrorIndex]);
       deleteError(lastErrorIndex);
+      setShowPopup(true)
     };
-  })
+  }, [errors, setViewError, deleteError, setShowPopup])
 
   return (
-
     <>
-      {detailIndex !== null && (
-        <ErrorDetail error={errors[detailIndex]} onClose={() => setDetailIndex(null)} />
+      {detailError !== null && (
+        <ErrorDetail error={detailError} onClose={() => setDetailError(null)} />
       )}
       <Header setCreateId={setCreateId} fetchData={fetchData} />
       {createId && (
         <FormCreateUser setCreateId={setCreateId} />
       )}
-      {viewError && (
+      {showPopup && (
         <>
           <ErrorPopup
-            errors={errors}
-            onClose={closeError}
+            error={viewError}
             setViewError={setViewError}
-            onOpenDetail={(index) => setDetailIndex(index)}
+            setShowPopup={setShowPopup}
+            onOpenDetail={(index) => setDetailError(index)}
           />
         </>
       )}

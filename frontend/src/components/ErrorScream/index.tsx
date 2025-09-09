@@ -10,13 +10,15 @@ type Props = {
 export const ErrorDetail: React.FC<Props> = ({ error, onClose }) => {
   if (!error) return null;
 
+  const message = error.infos.split(":");
+
   return (
     <Overlay>
       <div className="container">
         <h2>Detalhes do Erro</h2>
-        <p><strong>Mensagem:</strong> {error.message}</p>
+        <p><strong>Mensagem:</strong> {message[0]}</p>
         <p><strong>Informações:</strong></p>
-        <pre>{error.infos}</pre>
+        <pre className="message">{message[1]}</pre>
         <button onClick={onClose}>Fechar</button>
       </div>
     </Overlay>

@@ -2,10 +2,10 @@
 
 Aplicação ainda em desenvolvimento, próximos passos:
 
-- mostrar erros / alertas no frontend
-    E nesscessario converter todas as resposta em um objeto, como iniciado no Gerar Funcionario, e retornar ao FrontEnd;
 - Implementar Load nas chamadas de API
 - implementar filtros e relatórios solicitado no desafio
+- Reset do bd
+- Mostrar sucesso das requisições da API
 
 ## Iniciar Backend
 

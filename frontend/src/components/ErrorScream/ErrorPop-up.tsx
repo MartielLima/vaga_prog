@@ -3,22 +3,21 @@ import type { AppError } from "../../context/type";
 import { PopupContainer } from "./styled";
 
 type Props = {
-    errors: AppError[];
-    onClose: (index: number) => void;
-    onOpenDetail: (index: number) => void;
-    setViewError: (val: AppError) => void
+    error: AppError | null;
+    onOpenDetail: (error: AppError) => void;
+    setViewError: (val: AppError | null) => void;
+    setShowPopup: (val: boolean) => void;
 };
 
-export const ErrorPopup: React.FC<Props> = ({ errors, onClose, onOpenDetail, setViewError }) => {
-    if (errors.length === 0) return null;
+export const ErrorPopup: React.FC<Props> = ({ error, onOpenDetail, setViewError, setShowPopup }) => {
+    if (!error) return null;
 
-    const lastErrorIndex = errors.length - 1;
-    const error = errors[lastErrorIndex];
-    let errorTitle = error.infos.split(":")[0];
+    const errorTitle = error.infos.split(":")[0];
 
     const handleOnClick = () => {
         setShowPopup(false)
-        onOpenDetail(lastErrorIndex)
+        onOpenDetail(error)
+        setViewError(null)
     }
 
     return (
@@ -28,7 +27,7 @@ export const ErrorPopup: React.FC<Props> = ({ errors, onClose, onOpenDetail, set
             </div>
             <div className="actions">
                 <span onClick={handleOnClick}>Ver detalhes</span>|
-                <span onClick={() => onClose(lastErrorIndex)}>Fechar</span>
+                <span onClick={() => setViewError(null)}>Fechar</span>
             </div>
         </PopupContainer>
     );
