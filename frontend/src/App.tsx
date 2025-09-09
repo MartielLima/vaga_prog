@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from './components/Header';
 import Table from './components/Table';
 import FormCreateUser from './components/Form/FormCreateUser';
@@ -13,13 +13,21 @@ export type ResponseToJSONPropsGetAll = {
   status: string
 }
 
+// TODO continuar a logica para melhor fucionamento do Error popup
+
 function App() {
   const [createId, setCreateId] = useState<boolean>(false);
   const [itensTabela, setItensTabela] = useState([] as Funcionario[]);
   const [detailIndex, setDetailIndex] = useState<number | null>(null);
+  const { viewError, setViewError } = useState<AppError | null>(null);
+  const { showPopup, setShowPopup } = useState(false);
   const { errors, setErrors } = useError();
 
   const closeError = (index: number) => {
+    setErrors(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const deleteError = (index: number) => {
     setErrors(prev => prev.filter((_, i) => i !== index));
   };
 
@@ -45,6 +53,14 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    if (errors.length > 0) {
+      const lastErrorIndex = errors.length - 1;
+      setViewError(errors[lastErrorIndex]);
+      deleteError(lastErrorIndex);
+    };
+  })
+
   return (
 
     <>
@@ -55,12 +71,15 @@ function App() {
       {createId && (
         <FormCreateUser setCreateId={setCreateId} />
       )}
-      {errors.length > 0 && (
-        <ErrorPopup
-          errors={errors}
-          onClose={closeError}
-          onOpenDetail={(index) => setDetailIndex(index)}
-        />
+      {viewError && (
+        <>
+          <ErrorPopup
+            errors={errors}
+            onClose={closeError}
+            setViewError={setViewError}
+            onOpenDetail={(index) => setDetailIndex(index)}
+          />
+        </>
       )}
       <Table createId={createId} fetchData={fetchData} itensTabela={itensTabela} />
     </>

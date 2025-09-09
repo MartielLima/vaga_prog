@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 export const PopupContainer = styled.div` 
   position: fixed;
-  top: 10px;
-  left: 10px;
+  top: 80px;
+  left: 5px;
   background: rgba(255, 0, 0, 0.9);
   color: #fff;
   padding: 10px 15px;
