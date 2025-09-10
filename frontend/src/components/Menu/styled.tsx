@@ -40,3 +40,38 @@ export const MenuItem = styled.li`
     background-color: #f3f4f6;
   }
 `;
+
+export const InputItem = styled.input`
+  padding: 2px 10px;
+  border-radius: 6px;
+  border: #e4e5e7 solid 1px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 90%;
+
+  &:hover {   
+    background-color: #e4e5e7;
+    border: #cecfcf solid 1px;
+  }
+`;
+
+export const FilterContainer = styled.div`
+  background-color: #f3f4f6;
+  border: #dbdbdd solid 1px;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 10px;
+
+  div {
+      padding-left: 15px;
+  }
+`;
+
+export const ButtonClean = styled.button`
+  margin-top: 20px;
+  padding: 2px 5px;
+  background-color: #5eff1e;
+  border-radius: 8px;
+  border: #3ea515 solid 1px;
+  font-size: 25px;
+`;

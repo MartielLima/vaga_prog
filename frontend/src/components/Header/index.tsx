@@ -1,14 +1,21 @@
 import SearchBar from '../Search';
 import ButtonCreate from '../Button/ButtonCreate';
+import ButtonFilter from '../Button/ButtonFilter';
 import { Nav, Img, ButtonImg, ButtonContainer } from './styled';
 import { IoMenu } from "react-icons/io5";
 import { useState } from 'react';
 import RightMenu from '../Menu';
+import RightMenuFilter from '../Menu/menuFilter';
 
-export default function Header({ setCreateId, fetchData }: { setCreateId: React.Dispatch<React.SetStateAction<boolean>>, fetchData: () => object }) {
-  const [open, setOpen] = useState(false);
+export default function Header({ setCreateId, fetchData }:
+  {
+    setCreateId: React.Dispatch<React.SetStateAction<boolean>>, fetchData: () => object
+  }) {
+  const [openMenu, setOpenMenu] = useState(false);
+  const [openFilter, setOpenFilter] = useState(false);
 
-  const toggleMenu = () => setOpen(!open);
+  const toggleMenu = () => setOpenMenu(!openMenu);
+  const toggleFilter = () => setOpenFilter(!openFilter);
 
   return (
     <>
@@ -19,13 +26,17 @@ export default function Header({ setCreateId, fetchData }: { setCreateId: React.
           </div>
         </ButtonImg>
         <SearchBar />
-        <ButtonCreate setCreateId={setCreateId} />
+        <div className='buttonsContainer'>
+          <ButtonCreate setCreateId={setCreateId} />
+          <ButtonFilter onClick={toggleFilter} />
+        </div>
         <ButtonContainer>
           <button onClick={toggleMenu}><IoMenu /></button>
         </ButtonContainer>
       </Nav>
 
-      {open && <RightMenu open={open} toggleMenu={toggleMenu} />}
+      {openMenu && <RightMenu open={openMenu} toggleMenu={toggleMenu} />}
+      {openFilter && <RightMenuFilter open={openFilter} toggleFilter={toggleFilter} />}
     </>
   );
 }

@@ -82,7 +82,6 @@ function App() {
       )}
       <Table createId={createId} fetchData={fetchData} itensTabela={itensTabela} />
     </>
-
   )
 }
 

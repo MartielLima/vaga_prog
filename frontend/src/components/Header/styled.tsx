@@ -17,6 +17,12 @@ export const Nav = styled.nav`
     font-weight: bold;
     font-size: 30px;
   }
+
+  .buttonsContainer {
+    display: flex;
+    flex-direction: row;
+    flex: .5;
+  }
 `;
 
 export const Img = styled.img`
