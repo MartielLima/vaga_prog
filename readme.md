@@ -3,7 +3,6 @@
 Aplicação ainda em desenvolvimento, próximos passos:
 
 - Implementar Load nas chamadas de API
-- Adicionar um timer para fechar o erro
 - implementar filtros e relatórios solicitado no desafio
 - Reset do bd
 - Mostrar sucesso das requisições da API

@@ -52,7 +52,12 @@ function App() {
       const lastErrorIndex = errors.length - 1;
       setViewError(errors[lastErrorIndex]);
       deleteError(lastErrorIndex);
-      setShowPopup(true)
+      setShowPopup(true);
+      let timeout: ReturnType<typeof setTimeout> | null = null;
+      timeout = setTimeout(() => {
+        setViewError(null);
+        timeout = null;
+      }, 10000)
     };
   }, [errors, setViewError, deleteError, setShowPopup])
 
