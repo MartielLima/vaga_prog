@@ -1,8 +1,9 @@
-import { Container, Sidebar, MenuTitle, InputItem, FilterContainer, ButtonClean } from "./styled"
-import { useState } from "react";
+import { Container, Sidebar, FilterTitle, InputItem, FilterContainer, ButtonClean } from "./styled"
+import { useState, useEffect } from "react";
 import { MdFilterAltOff } from "react-icons/md";
+import { useFiltersValues } from "../../context/FilterContext";
 import OutsideClick from "../../hooks/OutsideClick";
-// TODO, continuar fazendo logica para os filtros e mexer na estética dos campos para o filtro
+// TODO, Filtros lançados no estado global, agora basta verificar o erro do componente no log, tirar o setter do stado de um useEffect e adicionar em uma função com o submit.
 
 type filterSalary = {
     minimum: number,
@@ -20,6 +21,7 @@ type filterDateOfBirth = {
 }
 
 export default function RightMenuFilter({ open, toggleFilter }: { open: boolean, toggleFilter: () => void }) {
+    const { setFiltersValues } = useFiltersValues();
     const ref = OutsideClick(toggleFilter);
 
     const [salaryValues, setSalaryValues] = useState<filterSalary>({
@@ -120,10 +122,26 @@ export default function RightMenuFilter({ open, toggleFilter }: { open: boolean,
 
     const hasFilter = Boolean(salaryValues.maximum || salaryValues.minimum || dateOfBirthValues.maximum || dateOfBirthValues.minimum || jobTitle);
 
+    useEffect(() => {
+        setFiltersValues(
+            {
+                Salary: {
+                    minimum: salaryValues.minimum,
+                    maximum: salaryValues.maximum,
+                },
+                DateOfBirth: {
+                    minimum: dateOfBirthValues.minimum,
+                    maximum: dateOfBirthValues.maximum,
+                },
+                jobTitle: jobTitle
+            }
+        )
+    }, [setFiltersValues, salaryValues, dateOfBirthValues, jobTitle])
+
     return (
         <Container ref={ref}>
             <Sidebar open={open}>
-                <MenuTitle>Filtros</MenuTitle>
+                <FilterTitle>Filtros</FilterTitle>
                 <FilterContainer className="dateOfBirth">
                     <p>Filtrar Data de Nascimento</p>
                     <div>

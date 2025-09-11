@@ -24,6 +24,13 @@ export const MenuTitle = styled.h2`
   font-weight: bold;
 `;
 
+export const FilterTitle = styled.h2`
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+`;
+
 export const MenuList = styled.ul`
   list-style: none;
   padding: 0;
