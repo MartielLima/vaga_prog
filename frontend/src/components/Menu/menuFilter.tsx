@@ -1,9 +1,20 @@
-import { Container, Sidebar, FilterTitle, InputItem, FilterContainer, ButtonClean } from "./styled"
-import { useState, useEffect } from "react";
+import {
+    Container,
+    Sidebar,
+    FilterTitle,
+    InputItem,
+    FilterContainer,
+    ButtonClean,
+    ButtonAplicar,
+    ButtonContainer
+} from "./styled"
+import { useState, useCallback } from "react";
 import { MdFilterAltOff } from "react-icons/md";
 import { useFiltersValues } from "../../context/FilterContext";
 import OutsideClick from "../../hooks/OutsideClick";
-// TODO, Filtros lançados no estado global, agora basta verificar o erro do componente no log, tirar o setter do stado de um useEffect e adicionar em uma função com o submit.
+
+// TODO, Filtros lançados no estado global, agora basta verificar o erro do componente no log.
+// TODO, Mostrar os possíveis erros do formulário usando o errosOnFilter
 
 type filterSalary = {
     minimum: number,
@@ -21,7 +32,8 @@ type filterDateOfBirth = {
 }
 
 export default function RightMenuFilter({ open, toggleFilter }: { open: boolean, toggleFilter: () => void }) {
-    const { setFiltersValues } = useFiltersValues();
+    const { filtersValues, setFiltersValues } = useFiltersValues();
+    const [errosOnFilter, setErrosOnFilter] = useState<string[]>([]);
     const ref = OutsideClick(toggleFilter);
 
     const [salaryValues, setSalaryValues] = useState<filterSalary>({
@@ -122,7 +134,54 @@ export default function RightMenuFilter({ open, toggleFilter }: { open: boolean,
 
     const hasFilter = Boolean(salaryValues.maximum || salaryValues.minimum || dateOfBirthValues.maximum || dateOfBirthValues.minimum || jobTitle);
 
-    useEffect(() => {
+    const applyFilters = useCallback(() => {
+
+        // Validação do Salario
+        if (salaryValues.minimum) {
+            const value = salaryValues.minimum;
+            if (value < 0) setErrosOnFilter(prev => [...prev, "O valor mínimo tem que ser maior que 0!"]);
+            if (value > salaryValues.maximum)
+                setErrosOnFilter(prev => [...prev, "O valor do salario menor tem que ser menor do que o maior!"]);
+        }
+        if (salaryValues.maximum) {
+            const value = salaryValues.maximum;
+            if (value < 0) setErrosOnFilter(prev => [...prev, "O valor máximo tem que ser maior que 0!"]);
+            if (value < salaryValues.minimum)
+                setErrosOnFilter(prev => [...prev, "O valor do salario maior tem que ser maior do que o maior!"]);
+        }
+
+        const today = new Date();
+        // Validação de Data
+        if (dateOfBirthValues.minimum) {
+            const date = dateOfBirthValues.minimum;
+            let age: number = today.getFullYear() - date.getFullYear();
+
+            const currentMonth = today.getMonth();
+            const monthOfBirth = date.getMonth();
+
+            if (currentMonth < monthOfBirth || (currentMonth === monthOfBirth && today.getDate() < date.getDate())) {
+                age--;
+            }
+
+            if (age < 16) setErrosOnFilter(prev => [...prev, "Não contem funcionario com menor de 16 anos!"]);
+        }
+        if (dateOfBirthValues.maximum) {
+            const date = dateOfBirthValues.maximum;
+            let age: number = today.getFullYear() - date.getFullYear();
+
+            const currentMonth = today.getMonth();
+            const monthOfBirth = date.getMonth();
+
+            if (currentMonth < monthOfBirth ||
+                (currentMonth === monthOfBirth && today.getDate() < date.getDate()))
+                age--;
+            if (age < 16)
+                setErrosOnFilter(prev => [...prev, "Não contem funcionario com menor de 16 anos!"]);
+            if (dateOfBirthValues.minimum &&
+                date.getTime() < dateOfBirthValues.minimum.getTime())
+                setErrosOnFilter(prev => [...prev, "A data tem que ser maior do que a minima!"]);
+        }
+
         setFiltersValues(
             {
                 Salary: {
@@ -136,6 +195,7 @@ export default function RightMenuFilter({ open, toggleFilter }: { open: boolean,
                 jobTitle: jobTitle
             }
         )
+        console.log(filtersValues) // TODO remover
     }, [setFiltersValues, salaryValues, dateOfBirthValues, jobTitle])
 
     return (
@@ -145,11 +205,11 @@ export default function RightMenuFilter({ open, toggleFilter }: { open: boolean,
                 <FilterContainer className="dateOfBirth">
                     <p>Filtrar Data de Nascimento</p>
                     <div>
-                        <label>Mínimo</label>
+                        <label>de</label>
                         <InputItem type="date"
                             value={dateOfBirthValues.minimum?.toISOString().split('T')[0].replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$2-$1")}
                             onChange={handleChangeDateOfBirth.minimum} />
-                        <label>Máximo</label>
+                        <label>ate</label>
                         <InputItem type="date"
                             value={dateOfBirthValues.maximum?.toISOString().split('T')[0].replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$2-$1")}
                             onChange={handleChangeDateOfBirth.maximum} />
@@ -159,9 +219,9 @@ export default function RightMenuFilter({ open, toggleFilter }: { open: boolean,
                 <FilterContainer className="salary">
                     <p>Filtrar Salario</p>
                     <div>
-                        <label>Mínimo</label>
+                        <label>de</label>
                         <InputItem type="text" value={salaryInputValues.minimum} onChange={handleChangeSalary.minimum} placeholder="R$ 0,00" />
-                        <label>Máximo</label>
+                        <label>ate</label>
                         <InputItem type="text" value={salaryInputValues.maximum} onChange={handleChangeSalary.maximum} placeholder="R$ 0,00" />
                     </div>
                 </FilterContainer>
@@ -173,7 +233,12 @@ export default function RightMenuFilter({ open, toggleFilter }: { open: boolean,
                     </div>
                 </FilterContainer>
 
-                {hasFilter && (<ButtonClean title="Limpar filtros" onClick={handleClear}><MdFilterAltOff /></ButtonClean>)}
+                {hasFilter && (
+                    <ButtonContainer>
+                        <ButtonClean title="Limpar filtros" onClick={handleClear}><MdFilterAltOff /></ButtonClean>
+                        <ButtonAplicar title="Aplicar filtros" onClick={applyFilters}>Aplicar</ButtonAplicar>
+                    </ButtonContainer>
+                )}
             </Sidebar>
         </Container>
     );

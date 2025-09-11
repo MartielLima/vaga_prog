@@ -71,14 +71,32 @@ export const FilterContainer = styled.div`
 
   div {
       padding-left: 15px;
+      display: flex;
+      flex-direction: column;
   }
 `;
 
 export const ButtonClean = styled.button`
-  margin-top: 20px;
   padding: 2px 5px;
-  background-color: #5eff1e;
+  background-color: #e2ffd6;
   border-radius: 8px;
-  border: #3ea515 solid 1px;
+  border: #97ac8f solid 1px;
   font-size: 25px;
+  height: 35px;
+`;
+
+export const ButtonAplicar = styled.button`
+  margin-left: 10px;
+  padding: 2px 5px;
+  background-color: #c7ffb0;
+  border-radius: 8px;
+  border: #8bac7f solid 1px;
+  font-size: 15px;
+  height: 35px;
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  margin-top: 10px;
+  padding: 5px;
 `;
