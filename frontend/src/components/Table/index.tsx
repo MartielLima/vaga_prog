@@ -6,17 +6,40 @@ import { useSearch } from '../../context/SearchContext';
 import FormEditUser from '../Form/FormEditUser';
 import FormDeleteUser from '../Form/FormDeleteUser';
 import type { Funcionario } from './type';
+import { useFiltersValues } from '../../context/FilterContext';
 
 function TableComponent({ createId, fetchData, itensTabela }: { createId: boolean, fetchData: () => void, itensTabela: Funcionario[] }) {
   const { search } = useSearch();
+  const { filtersValues } = useFiltersValues();
   const [editandoId, setEditandoId] = useState<number | null>(null);
   const [deleteInfos, setDeleteInfos] = useState<{ id: number, name: string } | null>(null);
-
   const [previousValue, setPreviousValue] = useState<{ [key: string]: unknown }>({})
 
-  const itensFiltrados = itensTabela.filter(item =>
-    item.nome.toLowerCase().includes(search.toLowerCase())
-  );
+  const itensFiltrados = itensTabela.filter(funcionario => {
+    const dateBirthFuncionario = new Date(funcionario.dataNascimento);
+    return funcionario.nome.toLowerCase().includes(search.toLowerCase()) &&
+      (
+        filtersValues.Salary.maximum ?
+          filtersValues.Salary.maximum >= funcionario.salario
+          : true
+      ) && (
+        filtersValues.Salary.minimum ?
+          filtersValues.Salary.minimum <= funcionario.salario
+          : true
+      ) && (
+        filtersValues.DateOfBirth.minimum ?
+          filtersValues.DateOfBirth.minimum.getTime() <= dateBirthFuncionario.getTime()
+          : true
+      ) && (
+        filtersValues.DateOfBirth.maximum ?
+          filtersValues.DateOfBirth.maximum.getTime() >= dateBirthFuncionario.getTime()
+          : true
+      ) && (
+        filtersValues.jobTitle ?
+          funcionario.funcao.toLowerCase().includes(filtersValues.jobTitle.toLowerCase())
+          : true
+      )
+  });
 
   useEffect(() => {
     if (previousValue.editandoId !== editandoId) {

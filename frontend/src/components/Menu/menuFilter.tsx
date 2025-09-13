@@ -12,6 +12,7 @@ import { useState, useCallback } from "react";
 import { MdFilterAltOff } from "react-icons/md";
 import { useFiltersValues } from "../../context/FilterContext";
 import OutsideClick from "../../hooks/OutsideClick";
+import formatDate from "../../Util/formatDate";
 
 // TODO, Filtros lançados no estado global, agora basta verificar o erro do componente no log.
 // TODO, Mostrar os possíveis erros do formulário usando o errosOnFilter
@@ -27,22 +28,36 @@ type filterInputSalary = {
 }
 
 type filterDateOfBirth = {
-    minimum: Date | null,
-    maximum: Date | null
+    minimum: string | undefined,
+    maximum: string | undefined
 }
 
 export default function RightMenuFilter({ open, toggleFilter }: { open: boolean, toggleFilter: () => void }) {
     const { filtersValues, setFiltersValues } = useFiltersValues();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [errosOnFilter, setErrosOnFilter] = useState<string[]>([]);
     const ref = OutsideClick(toggleFilter);
 
+    const today = new Date();
+    const year = today.getFullYear();
+    const mouth = today.getMonth();
+    const day = today.getDay()
+    const minDate = formatDate(new Date(year - 90, mouth, day));
+    const maxDate = formatDate(new Date(year - 16, mouth, day));
+
     const [salaryValues, setSalaryValues] = useState<filterSalary>({
-        minimum: 0,
-        maximum: 0
+        minimum: filtersValues.Salary.minimum,
+        maximum: filtersValues.Salary.maximum
     })
     const [salaryInputValues, setSalaryInputValues] = useState<filterInputSalary>({
-        minimum: "R$ 0,00",
-        maximum: "R$ 0,00"
+        minimum: filtersValues.Salary.minimum.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+        }),
+        maximum: filtersValues.Salary.maximum.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+        })
     })
     const handleChangeSalary = {
         minimum: (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,33 +105,44 @@ export default function RightMenuFilter({ open, toggleFilter }: { open: boolean,
     }
 
     const [dateOfBirthValues, setDateOfBirthValues] = useState<filterDateOfBirth>({
-        minimum: null,
-        maximum: null
+        minimum: filtersValues.DateOfBirth.minimum?.toISOString(),
+        maximum: filtersValues.DateOfBirth.maximum?.toISOString()
     })
     const handleChangeDateOfBirth = {
         minimum: (e: React.ChangeEvent<HTMLInputElement>) => {
             const input = e.target.value;
-            const dateValue = new Date(input);
 
             setDateOfBirthValues({
                 ...dateOfBirthValues,
-                minimum: dateValue
+                minimum: input
             })
         },
         maximum: (e: React.ChangeEvent<HTMLInputElement>) => {
             const input = e.target.value;
-            const dateValue = new Date(input);
 
             setDateOfBirthValues({
                 ...dateOfBirthValues,
-                maximum: dateValue
+                maximum: input
             })
         },
     }
 
-    const [jobTitle, setJobTitle] = useState("");
+    const [jobTitle, setJobTitle] = useState(filtersValues.jobTitle);
 
     const handleClear = () => {
+        setFiltersValues(
+            {
+                Salary: {
+                    minimum: 0,
+                    maximum: 0,
+                },
+                DateOfBirth: {
+                    minimum: null,
+                    maximum: null,
+                },
+                jobTitle: ""
+            }
+        )
         setSalaryValues({
             minimum: 0,
             maximum: 0
@@ -126,8 +152,8 @@ export default function RightMenuFilter({ open, toggleFilter }: { open: boolean,
             maximum: "R$ 0,00"
         })
         setDateOfBirthValues({
-            minimum: null,
-            maximum: null
+            minimum: "",
+            maximum: ""
         })
         setJobTitle("")
     }
@@ -135,7 +161,6 @@ export default function RightMenuFilter({ open, toggleFilter }: { open: boolean,
     const hasFilter = Boolean(salaryValues.maximum || salaryValues.minimum || dateOfBirthValues.maximum || dateOfBirthValues.minimum || jobTitle);
 
     const applyFilters = useCallback(() => {
-
         // Validação do Salario
         if (salaryValues.minimum) {
             const value = salaryValues.minimum;
@@ -153,7 +178,7 @@ export default function RightMenuFilter({ open, toggleFilter }: { open: boolean,
         const today = new Date();
         // Validação de Data
         if (dateOfBirthValues.minimum) {
-            const date = dateOfBirthValues.minimum;
+            const date = new Date(dateOfBirthValues.minimum);
             let age: number = today.getFullYear() - date.getFullYear();
 
             const currentMonth = today.getMonth();
@@ -166,7 +191,7 @@ export default function RightMenuFilter({ open, toggleFilter }: { open: boolean,
             if (age < 16) setErrosOnFilter(prev => [...prev, "Não contem funcionario com menor de 16 anos!"]);
         }
         if (dateOfBirthValues.maximum) {
-            const date = dateOfBirthValues.maximum;
+            const date = new Date(dateOfBirthValues.maximum);
             let age: number = today.getFullYear() - date.getFullYear();
 
             const currentMonth = today.getMonth();
@@ -178,7 +203,7 @@ export default function RightMenuFilter({ open, toggleFilter }: { open: boolean,
             if (age < 16)
                 setErrosOnFilter(prev => [...prev, "Não contem funcionario com menor de 16 anos!"]);
             if (dateOfBirthValues.minimum &&
-                date.getTime() < dateOfBirthValues.minimum.getTime())
+                date.getTime() < new Date(dateOfBirthValues.minimum).getTime())
                 setErrosOnFilter(prev => [...prev, "A data tem que ser maior do que a minima!"]);
         }
 
@@ -189,13 +214,12 @@ export default function RightMenuFilter({ open, toggleFilter }: { open: boolean,
                     maximum: salaryValues.maximum,
                 },
                 DateOfBirth: {
-                    minimum: dateOfBirthValues.minimum,
-                    maximum: dateOfBirthValues.maximum,
+                    minimum: dateOfBirthValues.minimum ? new Date(dateOfBirthValues.minimum) : null,
+                    maximum: dateOfBirthValues.maximum ? new Date(dateOfBirthValues.maximum) : null,
                 },
                 jobTitle: jobTitle
             }
         )
-        console.log(filtersValues) // TODO remover
     }, [setFiltersValues, salaryValues, dateOfBirthValues, jobTitle])
 
     return (
@@ -207,12 +231,14 @@ export default function RightMenuFilter({ open, toggleFilter }: { open: boolean,
                     <div>
                         <label>de</label>
                         <InputItem type="date"
-                            value={dateOfBirthValues.minimum?.toISOString().split('T')[0].replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$2-$1")}
-                            onChange={handleChangeDateOfBirth.minimum} />
+                            value={dateOfBirthValues.minimum?.split('T')[0].replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$2-$1")}
+                            onChange={handleChangeDateOfBirth.minimum}
+                            min={minDate} max={maxDate} />
                         <label>ate</label>
                         <InputItem type="date"
-                            value={dateOfBirthValues.maximum?.toISOString().split('T')[0].replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$2-$1")}
-                            onChange={handleChangeDateOfBirth.maximum} />
+                            value={dateOfBirthValues.maximum?.split('T')[0].replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$2-$1")}
+                            onChange={handleChangeDateOfBirth.maximum}
+                            min={dateOfBirthValues.minimum ? dateOfBirthValues.minimum : minDate} max={maxDate} />
                     </div>
                 </FilterContainer>
 

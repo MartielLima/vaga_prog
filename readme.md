@@ -3,9 +3,10 @@
 Aplicação ainda em desenvolvimento, próximos passos:
 
 - Implementar Load nas chamadas de API
-- implementar filtros e relatórios solicitado no desafio
+- implementar Relatórios solicitado no desafio
 - Reset do bd
 - Mostrar sucesso das requisições da API
+- Durante a criação dos 1000 usurários, adiar a atualização em tela, assim como adiar as solicitações no bd
 
 ## Iniciar Backend
 
