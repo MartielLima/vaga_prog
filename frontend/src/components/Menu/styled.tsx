@@ -24,6 +24,13 @@ export const MenuTitle = styled.h2`
   font-weight: bold;
 `;
 
+export const FilterTitle = styled.h2`
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+`;
+
 export const MenuList = styled.ul`
   list-style: none;
   padding: 0;
@@ -39,4 +46,57 @@ export const MenuItem = styled.li`
   &:hover {
     background-color: #f3f4f6;
   }
+`;
+
+export const InputItem = styled.input`
+  padding: 2px 10px;
+  border-radius: 6px;
+  border: #e4e5e7 solid 1px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 90%;
+
+  &:hover {   
+    background-color: #e4e5e7;
+    border: #cecfcf solid 1px;
+  }
+`;
+
+export const FilterContainer = styled.div`
+  background-color: #f3f4f6;
+  border: #dbdbdd solid 1px;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 10px;
+
+  div {
+      padding-left: 15px;
+      display: flex;
+      flex-direction: column;
+  }
+`;
+
+export const ButtonClean = styled.button`
+  padding: 2px 5px;
+  background-color: #e2ffd6;
+  border-radius: 8px;
+  border: #97ac8f solid 1px;
+  font-size: 25px;
+  height: 35px;
+`;
+
+export const ButtonAplicar = styled.button`
+  margin-left: 10px;
+  padding: 2px 5px;
+  background-color: #c7ffb0;
+  border-radius: 8px;
+  border: #8bac7f solid 1px;
+  font-size: 15px;
+  height: 35px;
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  margin-top: 10px;
+  padding: 5px;
 `;
