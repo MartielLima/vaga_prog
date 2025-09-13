@@ -34,7 +34,6 @@ type filterDateOfBirth = {
 
 export default function RightMenuFilter({ open, toggleFilter }: { open: boolean, toggleFilter: () => void }) {
     const { filtersValues, setFiltersValues } = useFiltersValues();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [errosOnFilter, setErrosOnFilter] = useState<string[]>([]);
     const ref = OutsideClick(toggleFilter);
 
