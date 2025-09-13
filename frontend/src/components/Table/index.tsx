@@ -7,6 +7,7 @@ import FormEditUser from '../Form/FormEditUser';
 import FormDeleteUser from '../Form/FormDeleteUser';
 import type { Funcionario } from './type';
 import { useFiltersValues } from '../../context/FilterContext';
+import { parseDate } from '../../Util/formatDate';
 
 function TableComponent({ createId, fetchData, itensTabela }: { createId: boolean, fetchData: () => void, itensTabela: Funcionario[] }) {
   const { search } = useSearch();
@@ -14,6 +15,18 @@ function TableComponent({ createId, fetchData, itensTabela }: { createId: boolea
   const [editandoId, setEditandoId] = useState<number | null>(null);
   const [deleteInfos, setDeleteInfos] = useState<{ id: number, name: string } | null>(null);
   const [previousValue, setPreviousValue] = useState<{ [key: string]: unknown }>({})
+  const [ascendingOrder, setAscendingOrder] = useState(true);
+  const [sortBy, setSortBy] = useState<keyof Funcionario | null>(null);
+
+  const handleSort = (column: keyof Funcionario) => {
+    if (sortBy === column) {
+      setAscendingOrder(prev => !prev);
+    } else {
+      setSortBy(column);
+      setAscendingOrder(true);
+    }
+  };
+
 
   const itensFiltrados = itensTabela.filter(funcionario => {
     const dateBirthFuncionario = new Date(funcionario.dataNascimento);
@@ -41,6 +54,33 @@ function TableComponent({ createId, fetchData, itensTabela }: { createId: boolea
       )
   });
 
+  const orderedEmployees = [...itensFiltrados];
+
+  if (sortBy) {
+    orderedEmployees.sort((a, b) => {
+      let valueA: string | number | Date = a[sortBy];
+      let valueB: string | number | Date = b[sortBy];
+
+      if (sortBy === "dataNascimento") {
+        valueA = parseDate(valueA as string);
+        valueB = parseDate(valueB as string);
+
+        return ascendingOrder ? valueA.getTime() - valueB.getTime() : valueB.getTime() - valueA.getTime();
+      }
+
+      if (typeof valueA === "number" && typeof valueB === "number") {
+        return ascendingOrder ? valueA - valueB : valueB - valueA;
+      }
+
+      if (typeof valueA === "string" && typeof valueB === "string") {
+        return ascendingOrder ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
+      }
+
+      return 0;
+    });
+  }
+
+
   useEffect(() => {
     if (previousValue.editandoId !== editandoId) {
       setPreviousValue({ ...previousValue, editandoId: editandoId })
@@ -67,16 +107,24 @@ function TableComponent({ createId, fetchData, itensTabela }: { createId: boolea
         <thead>
           <tr>
             <th>#</th>
-            <th>Nome</th>
-            <th>Data de Nascimento</th>
-            <th>Salario</th>
-            <th>Função</th>
+            <th onClick={() => handleSort("nome")} style={{ cursor: 'pointer' }}>
+              Nome {sortBy === "nome" ? (ascendingOrder ? "▲" : "▼") : ""}
+            </th>
+            <th onClick={() => handleSort("dataNascimento")} style={{ cursor: 'pointer' }}>
+              Data de Nascimento {sortBy === "dataNascimento" ? (ascendingOrder ? "▲" : "▼") : ""}
+            </th>
+            <th onClick={() => handleSort("salario")} style={{ cursor: 'pointer' }}>
+              Salário {sortBy === "salario" ? (ascendingOrder ? "▲" : "▼") : ""}
+            </th>
+            <th onClick={() => handleSort("funcao")} style={{ cursor: 'pointer' }}>
+              Função {sortBy === "funcao" ? (ascendingOrder ? "▲" : "▼") : ""}
+            </th>
             <th>Editar</th>
             <th>Excluir</th>
           </tr>
         </thead>
         <tbody>
-          {itensFiltrados.map((person, index) => {
+          {orderedEmployees.map((person, index) => {
             return (
               <tr key={person.id}>
                 <td>{index + 1}</td>

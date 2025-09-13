@@ -5,4 +5,3 @@ export type Funcionario = {
     salario: number;
     funcao: string;
 };
-
