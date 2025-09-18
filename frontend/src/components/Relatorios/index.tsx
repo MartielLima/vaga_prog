@@ -1,5 +1,7 @@
 import OutsideClick from '../../hooks/OutsideClick';
 import { Container, Sidebar } from './styled';
+import { FaRegListAlt, FaBirthdayCake, FaMoneyBillWave } from "react-icons/fa";
+import { TbReportSearch } from "react-icons/tb";
 
 type Props = {
     open: boolean;
@@ -13,10 +15,10 @@ export default function Relatorio({ open, toggleOpen }: Props) {
         <>
             <Container ref={ref}>
                 <Sidebar open={open}>
-                    {/* todos os funcionarios */}
-                    {/* Relatorio por Função */}
-                    {/* Funcionarios que fazem aniversario */}
-                    {/* Salarios */}
+                    {/* todos os funcionarios */} <FaRegListAlt />
+                    {/* Relatorio por Função */} <TbReportSearch />
+                    {/* Funcionarios que fazem aniversario */} <FaBirthdayCake />
+                    {/* Salarios */} <FaMoneyBillWave />
                 </Sidebar>
             </Container>
         </>

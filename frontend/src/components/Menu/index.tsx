@@ -3,6 +3,10 @@ import OutsideClick from "../../hooks/OutsideClick";
 import type { AppError } from "../../context/type";
 import { useError } from "../../context/ErrorContext";
 
+import { HiOutlineDocumentReport } from "react-icons/hi";
+import { FaUsers } from "react-icons/fa";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
+
 type Props = {
     open: boolean;
     toggleMenu: () => void;
@@ -38,9 +42,18 @@ export default function RightMenu({ open, toggleMenu, toggleRelatorio }: Props) 
             <Sidebar open={open}>
                 <MenuTitle>Menu</MenuTitle>
                 <MenuList>
-                    <MenuItem onClick={handleRegisterMultipleUsers} >Cadastrar vários Usuarios</MenuItem>
-                    <MenuItem onClick={toggleRelatorio}>Relatórios</MenuItem>
-                    <MenuItem>Aumento para todos os funcionarios</MenuItem> {/* TODO criar tela e função para aumento para todos os funcionarios */}
+                    <MenuItem onClick={handleRegisterMultipleUsers} >
+                        <FaUsers />
+                        <p>Cadastrar vários Usuarios</p>
+                    </MenuItem>
+                    <MenuItem onClick={toggleRelatorio}>
+                        <HiOutlineDocumentReport />
+                        <p>Relatórios</p>
+                    </MenuItem>
+                    <MenuItem>
+                        <FaMoneyBillTrendUp />
+                        <p>Aumento para todos os funcionarios</p>
+                    </MenuItem> {/* TODO criar tela e função para aumento para todos os funcionarios */}
                 </MenuList>
             </Sidebar>
         </Container>
