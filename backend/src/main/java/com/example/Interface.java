@@ -14,6 +14,7 @@ import com.example.util.crud.Delete;
 import com.example.util.crud.Read;
 
 public class Interface {
+
     public static void start(String[] args) throws InterruptedException {
         Util.clean();
         System.out.println(Cor.verde("Bem-vindo a minha tentativa de realizar o desafio proposto!"));
@@ -56,14 +57,15 @@ public class Interface {
                 }
                 case "3" -> {
                     Util.clean();
-                    
+
                     Server server = new Server();
                     server.start(args);
                 }
                 case "sair" -> {
                     Util.sair();
                 }
-                default -> System.out.println(Cor.vermelho("Opção inválida. Tente novamente."));
+                default ->
+                    System.out.println(Cor.vermelho("Opção inválida. Tente novamente."));
             }
 
             scan.close();
@@ -71,7 +73,7 @@ public class Interface {
         }
     }
 
-    public static void seguir(Funcionario_db db){
+    public static void seguir(Funcionario_db db) {
         if (db == null) {
             System.out.println(Cor.vermelho("Dados de funcionário não disponíveis."));
             return;
@@ -137,7 +139,7 @@ public class Interface {
             System.out.printf(Cor.cinza("6") + ": para " + Cor.cinza("ver os funcionarios por cargo\n"));
             System.out.println("Caso prefira sair da aplicação, digite 'sair'.");
 
-            opcao = scan.nextLine();            
+            opcao = scan.nextLine();
 
             switch (opcao) {
                 case "1" -> {
@@ -170,10 +172,11 @@ public class Interface {
                     Filtros.agrupar_por_funcao(db);
                     Util.pausa();
                 }
-                case "sair" -> Util.sair();
+                case "sair" ->
+                    Util.sair();
                 default -> {
                 }
             }
         }
-    }    
+    }
 }
