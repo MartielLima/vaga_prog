@@ -17,6 +17,7 @@ import com.example.db.Funcionario_db;
 import com.example.model.Funcionario;
 
 public class Filtros {
+
     public static void agrupar_por_funcao(Funcionario_db db) {
         try {
             Map<String, List<Funcionario>> funcionariosPorFuncao = db.get_funcionarios().stream()
@@ -68,7 +69,7 @@ public class Filtros {
     public static void funcionario_mais_velho(Funcionario_db db) {
         try {
             Optional<Funcionario> funcionarioMaisVelho = db.get_funcionarios().stream()
-                    .max(Comparator.comparing(Funcionario::getDataNascimento));
+                    .min(Comparator.comparing(Funcionario::getDataNascimento));
 
             if (funcionarioMaisVelho.isPresent()) {
                 System.out.println(Cor.verde("Funcionário mais velho:"));
@@ -116,7 +117,7 @@ public class Filtros {
         try {
             List<Funcionario> funcionarios = db.get_funcionarios();
             for (Funcionario f : funcionarios) {
-                 System.out.println(f.getNome() + " - " + f.getFuncao() + " - " + f.getSalario().divide(BigDecimal.valueOf(salarioMinimo), 2, RoundingMode.HALF_UP) + " - " + f.getDataNascimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                System.out.println(f.getNome() + " - " + f.getFuncao() + " - " + f.getSalario().divide(BigDecimal.valueOf(salarioMinimo), 2, RoundingMode.HALF_UP) + " - " + f.getDataNascimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             }
             System.out.println("\n\n");
         } catch (SQLException e) {
