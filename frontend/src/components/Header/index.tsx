@@ -6,6 +6,7 @@ import { IoMenu } from "react-icons/io5";
 import { useState } from 'react';
 import RightMenu from '../Menu';
 import RightMenuFilter from '../Menu/menuFilter';
+import Relatorio from "../../components/Relatorios";
 
 export default function Header({ setCreateId, fetchData }:
   {
@@ -13,7 +14,12 @@ export default function Header({ setCreateId, fetchData }:
   }) {
   const [openMenu, setOpenMenu] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
+  const [showRelatorio, setShowRelatorio] = useState(false);
 
+  const toggleRelatorio = () => {
+    setShowRelatorio(!showRelatorio)
+    toggleMenu();
+  };
   const toggleMenu = () => setOpenMenu(!openMenu);
   const toggleFilter = () => setOpenFilter(!openFilter);
 
@@ -35,8 +41,9 @@ export default function Header({ setCreateId, fetchData }:
         </ButtonContainer>
       </Nav>
 
-      {openMenu && <RightMenu open={openMenu} toggleMenu={toggleMenu} />}
+      {openMenu && <RightMenu open={openMenu} toggleMenu={toggleMenu} toggleRelatorio={toggleRelatorio} />}
       {openFilter && <RightMenuFilter open={openFilter} toggleFilter={toggleFilter} />}
+      {showRelatorio && <Relatorio open={showRelatorio} toggleOpen={toggleRelatorio} />}
     </>
   );
 }

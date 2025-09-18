@@ -16,8 +16,6 @@ export const Button = styled.button`
   }
 `;
 
-// TODO Configurar filtros
-
 export default function ButtonFilter({ onClick }: { onClick: () => void }) {
   return (
     <Button onClick={onClick}>

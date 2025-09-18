@@ -9,8 +9,6 @@ type Props = {
     setShowPopup: (val: boolean) => void;
 };
 
-// TODO adicionar um timer para fechar automaticamente a notificação apos 10 segundos 
-
 export const ErrorPopup: React.FC<Props> = ({ error, onOpenDetail, setViewError, setShowPopup }) => {
     if (!error) return null;
 
