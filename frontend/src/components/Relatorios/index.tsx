@@ -5,6 +5,7 @@ import { HiOutlineCake } from "react-icons/hi2";
 import { MdOutlinePayments } from "react-icons/md";
 
 import { Container, Content, CardContainer } from './styled';
+import { useState } from "react";
 
 type Props = {
     open: boolean;
@@ -14,35 +15,63 @@ type Props = {
 // TODO Continuar a criação dos Relatorios
 export default function Relatorio({ open, toggleOpen }: Props) {
     //TODO seguir adicionando as informações necessárias para gerar o relatório quando passar o mouse encima da div
+    const [hoverListCollaborators, setHoverInListCollaborators] = useState(false)
+    const [hoverInEmployeesGroupedByPosition, setHoverInEmployeesGroupedByPosition] = useState(false)
+    const [hoverInBirthdaysOfTheMonth, setHoverInBirthdaysOfTheMonth] = useState(false)
+    const [hoverInSalary, setHoverInSalary] = useState(false)
+    const [totalSalary, setTotalSalary] = useState("")
 
     return (
         <Container open={open} onClick={toggleOpen} >
             <Content open={open} onClick={(e) => e.stopPropagation()}>
                 <h1>Relatorios</h1>
                 <div className="subContainer">
-                    <CardContainer >
+                    <CardContainer onMouseEnter={() => setHoverInListCollaborators(true)} onMouseLeave={() => setHoverInListCollaborators(false)}>
                         <FaRegListAlt />
                         <p>
                             Gerar uma lista de todos os colaboradores contendo seus dados.
                         </p>
+                        {hoverListCollaborators && (
+                            <button>
+                                Gerar Relatorio
+                            </button>
+                        )}
                     </CardContainer>
-                    <CardContainer >
+                    <CardContainer onMouseEnter={() => setHoverInEmployeesGroupedByPosition(true)} onMouseLeave={() => setHoverInEmployeesGroupedByPosition(false)} >
                         <TbReportSearch />
                         <p>
                             Gerar uma lista de todos os colaboradores agrupados por cargo.
                         </p>
+                        {hoverInEmployeesGroupedByPosition && (
+                            <button>
+                                Gerar Relatorio
+                            </button>
+                        )}
                     </CardContainer>
-                    <CardContainer >
+                    <CardContainer onMouseEnter={() => setHoverInBirthdaysOfTheMonth(true)} onMouseLeave={() => setHoverInBirthdaysOfTheMonth(false)} >
                         <HiOutlineCake />
                         <p>
                             Gerar uma lista contendo todos os colaboradores que fazem aniversario no mes selecionado.
                         </p>
+                        {hoverInBirthdaysOfTheMonth && (
+                            <button>
+                                Gerar Relatorio
+                            </button>
+                        )}
                     </CardContainer>
-                    <CardContainer >
+                    <CardContainer onMouseEnter={() => setHoverInSalary(true)} onMouseLeave={() => setHoverInSalary(false)} >
                         <MdOutlinePayments />
-                        <p>
-                            Ver o investimento mensal em salario, para os colaboradores.
-                        </p>
+                        {!hoverInSalary && (
+                            <p>
+                                Ver o investimento mensal em salario, para os colaboradores.
+                            </p>
+                        )}
+                        {hoverInSalary && (
+                            <>
+                                <p>Valor Total investido em salario</p>
+                                <input type="text" value={totalSalary} readOnly />
+                            </>
+                        )}
                     </CardContainer>
                 </div>
             </Content>

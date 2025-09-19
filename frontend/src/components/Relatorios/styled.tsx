@@ -51,7 +51,7 @@ export const Content = styled.div<{ open: boolean }>`
   }
 `;
 
-export const CardContainer = styled.button`
+export const CardContainer = styled.div`
   margin: 10px;
   height: 50%;
   flex: 1;
@@ -64,6 +64,24 @@ export const CardContainer = styled.button`
   box-shadow: 1px 1px 3px 2px #0000003f;
   border-radius: 10px;
   padding: 5px;
+
+  button {
+    font-size: 20px;
+    background-color: #31d131;
+    padding: 5px;
+    border-radius: 6px;
+  }
+
+  button:hover {
+    background-color: #2bb82b;
+  }
+
+  input {
+    width: 80%;
+    height: 10%;
+    border-radius: 5px;
+    border: #0000004e 1px solid;
+  }
 
   p {
     font-size: 20px;
