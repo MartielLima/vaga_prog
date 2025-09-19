@@ -5,7 +5,9 @@ import { HiOutlineCake } from "react-icons/hi2";
 import { MdOutlinePayments } from "react-icons/md";
 
 import { Container, Content, CardContainer } from './styled';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import GetAndCalculateSalary from "../../Util/getAndCalculateSalary";
+import formatCurrency from "../../Util/formatCurrency";
 
 type Props = {
     open: boolean;
@@ -20,6 +22,16 @@ export default function Relatorio({ open, toggleOpen }: Props) {
     const [hoverInBirthdaysOfTheMonth, setHoverInBirthdaysOfTheMonth] = useState(false)
     const [hoverInSalary, setHoverInSalary] = useState(false)
     const [totalSalary, setTotalSalary] = useState("")
+
+    useEffect(() => {
+        const fetchSalary = async () => {
+            const totSalary = await GetAndCalculateSalary();
+            if (!totSalary) return;
+            setTotalSalary(formatCurrency(totSalary));
+        }
+
+        fetchSalary()
+    }, [])
 
     return (
         <Container open={open} onClick={toggleOpen} >

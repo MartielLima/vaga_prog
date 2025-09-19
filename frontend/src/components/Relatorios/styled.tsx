@@ -81,6 +81,8 @@ export const CardContainer = styled.div`
     height: 10%;
     border-radius: 5px;
     border: #0000004e 1px solid;
+    font-size: clamp(10px, 2vw, 20px);
+    text-align: center;
   }
 
   p {
