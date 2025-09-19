@@ -1,24 +1,80 @@
 import styled from 'styled-components';
+import { primaryColor } from '../../config/color';
 
-export const Container = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
+export const Container = styled.div<{ open: boolean }>`
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #00000048;
+  opacity: ${(p) => (p.open ? 1 : 0)};
+  visibility: ${(p) => (p.open ? "visible" : "hidden")};
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+  z-index: 900;
+  pointer-events: ${(p) => (p.open ? "auto" : "none")};
 `;
 
-export const Sidebar = styled.div<{ open: boolean }>`
+export const Content = styled.div<{ open: boolean }>`
   position: fixed;
   top: 5%;
+  right: 5%;
   width: 90%;
   height: 90%;
   background-color: #ffffff;
   box-shadow: -4px 0 12px rgba(0,0,0,0.2);
   padding: 20px;
-  transform: ${(props) => (props.open ? "translateX(0)" : "translateX(100%)")};
+  transform: ${(p) => (p.open ? "translateX(0)" : "translateX(100%)")};
   transition: transform 0.3s ease;
-  z-index: 1000;
+  z-index: 1001;
   border-radius: 8px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+
+  h1 {
+    font-family: "Montserrat", sans-serif;
+    color: ${primaryColor};
+    font-size: 5rem;
+  }
+
+  .subContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 80%;
+    height: 80%;
+  }
 `;
+
+export const CardContainer = styled.button`
+  margin: 10px;
+  height: 50%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  color: ${primaryColor};
+  font-size: 5rem;
+  box-shadow: 1px 1px 3px 2px #0000003f;
+  border-radius: 10px;
+  padding: 5px;
+
+  p {
+    font-size: 20px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  }
+
+  &:hover {
+    transition: 500ms;
+    height: 90%;
+    font-size: 8rem;
+    background-color: #e3e3e3;
+    flex: 1.2;
+  }
+`

@@ -1,27 +1,52 @@
-import OutsideClick from '../../hooks/OutsideClick';
-import { Container, Sidebar } from './styled';
-import { FaRegListAlt, FaBirthdayCake, FaMoneyBillWave } from "react-icons/fa";
+/* eslint-disable no-irregular-whitespace */
+import { FaRegListAlt } from "react-icons/fa";
 import { TbReportSearch } from "react-icons/tb";
+import { HiOutlineCake } from "react-icons/hi2";
+import { MdOutlinePayments } from "react-icons/md";
+
+import { Container, Content, CardContainer } from './styled';
 
 type Props = {
     open: boolean;
     toggleOpen: () => void;
 }
+
 // TODO Continuar a criação dos Relatorios
 export default function Relatorio({ open, toggleOpen }: Props) {
-    const ref = OutsideClick(toggleOpen);
+    //TODO seguir adicionando as informações necessárias para gerar o relatório quando passar o mouse encima da div
 
     return (
-        <>
-            <Container ref={ref}>
-                <Sidebar open={open}>
-                    {/* todos os funcionarios */} <FaRegListAlt />
-                    {/* Relatorio por Função */} <TbReportSearch />
-                    {/* Funcionarios que fazem aniversario */} <FaBirthdayCake />
-                    {/* Salarios */} <FaMoneyBillWave />
-                </Sidebar>
-            </Container>
-        </>
+        <Container open={open} onClick={toggleOpen} >
+            <Content open={open} onClick={(e) => e.stopPropagation()}>
+                <h1>Relatorios</h1>
+                <div className="subContainer">
+                    <CardContainer >
+                        <FaRegListAlt />
+                        <p>
+                            Gerar uma lista de todos os colaboradores contendo seus dados.
+                        </p>
+                    </CardContainer>
+                    <CardContainer >
+                        <TbReportSearch />
+                        <p>
+                            Gerar uma lista de todos os colaboradores agrupados por cargo.
+                        </p>
+                    </CardContainer>
+                    <CardContainer >
+                        <HiOutlineCake />
+                        <p>
+                            Gerar uma lista contendo todos os colaboradores que fazem aniversario no mes selecionado.
+                        </p>
+                    </CardContainer>
+                    <CardContainer >
+                        <MdOutlinePayments />
+                        <p>
+                            Ver o investimento mensal em salario, para os colaboradores.
+                        </p>
+                    </CardContainer>
+                </div>
+            </Content>
+        </Container>
     );
 };
 

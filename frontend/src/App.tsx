@@ -8,6 +8,9 @@ import type { AppError } from "./context/type";
 import { ErrorPopup } from './components/ErrorScream/ErrorPop-up';
 import { ErrorDetail } from './components/ErrorScream';
 
+import "@fontsource/montserrat/400.css";
+import "@fontsource/montserrat/700.css";
+
 export type ResponseToJSONPropsGetAll = {
   funcionario: Funcionario[]
   status: string
