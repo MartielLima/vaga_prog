@@ -76,7 +76,7 @@ export const CardContainer = styled.div`
     background-color: #2bb82b;
   }
 
-  input {
+  input, select {
     width: 80%;
     height: 10%;
     border-radius: 5px;
@@ -85,7 +85,7 @@ export const CardContainer = styled.div`
     text-align: center;
   }
 
-  p {
+  p, label {
     font-size: 20px;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   }

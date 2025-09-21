@@ -10,6 +10,8 @@ import { ErrorDetail } from './components/ErrorScream';
 
 import "@fontsource/montserrat/400.css";
 import "@fontsource/montserrat/700.css";
+import BirthdayPersonOfTheMonth from './components/Relatorios/BirthdayPersonOfTheMonth';
+import { useIsStopped } from './context/StopHighFetchContext';
 
 export type ResponseToJSONPropsGetAll = {
   funcionario: Funcionario[]
@@ -23,12 +25,14 @@ function App() {
   const [viewError, setViewError] = useState<AppError | null>(null);
   const [showPopup, setShowPopup] = useState(false);
   const { errors, setErrors } = useError();
+  const { isStopped } = useIsStopped();
 
   const deleteError = useCallback((index: number) => {
     setErrors(prev => prev.filter((_, i) => i !== index));
   }, [setErrors])
 
   const fetchData = async () => {
+    if (isStopped) return;
     try {
       const response = await fetch('http://127.0.0.1:8085/all');
 
@@ -51,6 +55,7 @@ function App() {
   };
 
   useEffect(() => {
+    if (isStopped) return;
     if (errors.length > 0) {
       const lastErrorIndex = errors.length - 1;
       setViewError(errors[lastErrorIndex]);

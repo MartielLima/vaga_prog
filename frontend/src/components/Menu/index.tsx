@@ -6,6 +6,7 @@ import { useError } from "../../context/ErrorContext";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { FaUsers } from "react-icons/fa";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
+import { useIsStopped } from "../../context/StopHighFetchContext";
 
 type Props = {
     open: boolean;
@@ -15,10 +16,12 @@ type Props = {
 
 export default function RightMenu({ open, toggleMenu, toggleRelatorio }: Props) {
     const { errors, setErrors } = useError();
+    const { setIsStopped } = useIsStopped();
     const ref = OutsideClick(toggleMenu);
 
     const handleRegisterMultipleUsers = async () => {
         try {
+            setIsStopped(true)
             const response = await fetch(`http://127.0.0.1:8085/cadastrarUsuarios`, {
                 method: "POST",
                 headers: {
@@ -30,13 +33,16 @@ export default function RightMenu({ open, toggleMenu, toggleRelatorio }: Props) 
                 const data: AppError = await response.json();
                 setErrors(prev => [...prev, data]);
             }
+            setIsStopped(false)
         } catch (err) {
+            setIsStopped(false)
             if (err instanceof Error) {
                 const newErrorList: AppError[] = [...errors, { message: "Erro ao enviar usuário:", infos: err.message }]
                 setErrors(newErrorList);
             }
         }
     }
+    // TODO criar tela e função para aumento para todos os funcionarios
     return (
         <Container ref={ref}>
             <Sidebar open={open}>
@@ -53,7 +59,7 @@ export default function RightMenu({ open, toggleMenu, toggleRelatorio }: Props) 
                     <MenuItem>
                         <FaMoneyBillTrendUp />
                         <p>Aumento para todos os funcionarios</p>
-                    </MenuItem> {/* TODO criar tela e função para aumento para todos os funcionarios */}
+                    </MenuItem>
                 </MenuList>
             </Sidebar>
         </Container>

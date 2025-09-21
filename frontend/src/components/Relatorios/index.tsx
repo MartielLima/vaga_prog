@@ -1,4 +1,4 @@
-/* eslint-disable no-irregular-whitespace */
+
 import { FaRegListAlt } from "react-icons/fa";
 import { TbReportSearch } from "react-icons/tb";
 import { HiOutlineCake } from "react-icons/hi2";
@@ -9,19 +9,44 @@ import { useEffect, useState } from "react";
 import GetAndCalculateSalary from "../../Util/getAndCalculateSalary";
 import formatCurrency from "../../Util/formatCurrency";
 
+import ConvertMonth from "../../Util/ConvertMonthNumberToNameInString";
+import type { month as monthType } from "../../Util/ConvertMonthNumberToNameInString";
+import BirthdayPersonOfTheMonth from "./BirthdayPersonOfTheMonth";
+import AllEmployees from "./AllEmployees";
+import EmployeesGroupedByFunction from "./EmployeesGroupedByFunction";
+import SalaryQuotedByMinimumWage from "./SalaryQuotedByMinimumWage";
+
+
 type Props = {
     open: boolean;
     toggleOpen: () => void;
 }
 
-// TODO Continuar a criação dos Relatorios
 export default function Relatorio({ open, toggleOpen }: Props) {
-    //TODO seguir adicionando as informações necessárias para gerar o relatório quando passar o mouse encima da div
     const [hoverListCollaborators, setHoverInListCollaborators] = useState(false)
     const [hoverInEmployeesGroupedByPosition, setHoverInEmployeesGroupedByPosition] = useState(false)
     const [hoverInBirthdaysOfTheMonth, setHoverInBirthdaysOfTheMonth] = useState(false)
     const [hoverInSalary, setHoverInSalary] = useState(false)
     const [totalSalary, setTotalSalary] = useState("")
+    const [monthOfInterest, setMonthOfInterest] = useState<monthType>(ConvertMonth())
+    const [salaryQuotedByMinimumWage, setSalaryQuotedByMinimumWage] = useState(false)
+    const [minimumWageValue, setMinimumWageValue] = useState(1518)
+
+    const months = [
+        "Janeiro",
+        "Fevereiro",
+        "Março",
+        "Abril",
+        "Maio",
+        "Junho",
+        "Julho",
+        "Agosto",
+        "Setembro",
+        "Outubro",
+        "Novembro",
+        "Dezembro"
+    ];
+
 
     useEffect(() => {
         const fetchSalary = async () => {
@@ -32,6 +57,17 @@ export default function Relatorio({ open, toggleOpen }: Props) {
 
         fetchSalary()
     }, [])
+
+    const handleSetMonth = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setMonthOfInterest(e.target.value as monthType)
+    }
+
+    const handleChangeMinimumWageValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let input = e.target.value;
+        input = input.replace(/\D/g, '');
+        const numberValue = Number(input) / 100;
+        setMinimumWageValue(numberValue);
+    };
 
     return (
         <Container open={open} onClick={toggleOpen} >
@@ -44,9 +80,9 @@ export default function Relatorio({ open, toggleOpen }: Props) {
                             Gerar uma lista de todos os colaboradores contendo seus dados.
                         </p>
                         {hoverListCollaborators && (
-                            <button>
+                            <AllEmployees>
                                 Gerar Relatorio
-                            </button>
+                            </AllEmployees>
                         )}
                     </CardContainer>
                     <CardContainer onMouseEnter={() => setHoverInEmployeesGroupedByPosition(true)} onMouseLeave={() => setHoverInEmployeesGroupedByPosition(false)} >
@@ -55,9 +91,9 @@ export default function Relatorio({ open, toggleOpen }: Props) {
                             Gerar uma lista de todos os colaboradores agrupados por cargo.
                         </p>
                         {hoverInEmployeesGroupedByPosition && (
-                            <button>
+                            <EmployeesGroupedByFunction>
                                 Gerar Relatorio
-                            </button>
+                            </EmployeesGroupedByFunction>
                         )}
                     </CardContainer>
                     <CardContainer onMouseEnter={() => setHoverInBirthdaysOfTheMonth(true)} onMouseLeave={() => setHoverInBirthdaysOfTheMonth(false)} >
@@ -66,22 +102,42 @@ export default function Relatorio({ open, toggleOpen }: Props) {
                             Gerar uma lista contendo todos os colaboradores que fazem aniversario no mes selecionado.
                         </p>
                         {hoverInBirthdaysOfTheMonth && (
-                            <button>
-                                Gerar Relatorio
-                            </button>
+                            <>
+                                <label htmlFor="mes">Escolha um mês:</label>
+                                <select id="mes" name="mes" value={monthOfInterest} onChange={e => handleSetMonth(e)}>
+                                    {months.map((month) => {
+                                        return (
+                                            <option value={month}>{month}</option>
+                                        )
+                                    })}
+                                </select>
+                                <BirthdayPersonOfTheMonth month={monthOfInterest}>
+                                    Gerar Relatorio
+                                </BirthdayPersonOfTheMonth>
+                            </>
                         )}
                     </CardContainer>
-                    <CardContainer onMouseEnter={() => setHoverInSalary(true)} onMouseLeave={() => setHoverInSalary(false)} >
+                    <CardContainer onMouseEnter={() => setHoverInSalary(true)} onMouseLeave={() => { setHoverInSalary(false); setSalaryQuotedByMinimumWage(false) }} >
                         <MdOutlinePayments />
                         {!hoverInSalary && (
                             <p>
                                 Ver o investimento mensal em salario, para os colaboradores.
                             </p>
                         )}
-                        {hoverInSalary && (
+                        {hoverInSalary && !salaryQuotedByMinimumWage && (
                             <>
                                 <p>Valor Total investido em salario</p>
                                 <input type="text" value={totalSalary} readOnly />
+                                <button onClick={() => setSalaryQuotedByMinimumWage(true)}>Relatorio Salario Minimo</button>
+                            </>
+                        )}
+                        {salaryQuotedByMinimumWage && (
+                            <>
+                                <p>Ver quantos salários minimo os colaboradores recebe</p>
+                                <input type="text" value={formatCurrency(minimumWageValue)} onChange={handleChangeMinimumWageValue} placeholder="R$ 0,00" />
+                                <SalaryQuotedByMinimumWage minimumWage={minimumWageValue}>
+                                    Gerar Relatorio
+                                </SalaryQuotedByMinimumWage>
                             </>
                         )}
                     </CardContainer>
@@ -91,108 +147,11 @@ export default function Relatorio({ open, toggleOpen }: Props) {
     );
 };
 
-/*
-    Listando todos os funcionários:
-    Maria - Operador - R$ 2.009,44 - 18/10/2000
-    João - Operador - R$ 2.284,38 - 12/05/1990
-    Caio - Coordenador - R$ 9.836,14 - 02/05/1961
-    Miguel - Diretor - R$ 19.119,88 - 14/10/1988
-    Alice - Recepcionista - R$ 1.582,72 - 05/01/1995
-    Heitor - Operador - R$ 1.582,72 - 19/11/1999
-    Arthur - Contador - R$ 4.071,84 - 31/03/1993
-    Laura - Gerente - R$ 3.017,45 - 08/07/1994
-    Heloisa - Eletricista - R$ 1.606,85 - 24/05/2003
-    Helena - Gerente - R$ 2.799,93 - 02/09/1996
-    Total de funcionários: 10
-
-
-    Listando todos os funcionários apos remover o João:
-    Maria - Operador - R$ 2.009,44 - 18/10/2000
-    Caio - Coordenador - R$ 9.836,14 - 02/05/1961
-    Miguel - Diretor - R$ 19.119,88 - 14/10/1988
-    Alice - Recepcionista - R$ 1.582,72 - 05/01/1995
-    Heitor - Operador - R$ 1.582,72 - 19/11/1999
-    Arthur - Contador - R$ 4.071,84 - 31/03/1993
-    Laura - Gerente - R$ 3.017,45 - 08/07/1994
-    Heloisa - Eletricista - R$ 1.606,85 - 24/05/2003
-    Helena - Gerente - R$ 2.799,93 - 02/09/1996
-    Total de funcionários: 9
-
-
-    Todos os funcionários foram atualizados com sucesso.
-    Maria - Operador - R$ 2.210,38 - 18/10/2000
-    Caio - Coordenador - R$ 10.819,75 - 02/05/1961
-    Miguel - Diretor - R$ 21.031,87 - 14/10/1988
-    Alice - Recepcionista - R$ 1.740,99 - 05/01/1995
-    Heitor - Operador - R$ 1.740,99 - 19/11/1999
-    Arthur - Contador - R$ 4.479,02 - 31/03/1993
-    Laura - Gerente - R$ 3.319,19 - 08/07/1994
-    Heloisa - Eletricista - R$ 1.767,53 - 24/05/2003
-    Helena - Gerente - R$ 3.079,92 - 02/09/1996
-    Total de funcionários: 9
-
-
-    Funcionários agrupados por função:
-    Função: Operador
-    - Maria
-    - Heitor
-    Função: Eletricista
-    - Heloisa
-    Função: Recepcionista
-    - Alice
-    Função: Diretor
-    - Miguel
-    Função: Gerente
-    - Laura
-    - Helena
-    Função: Coordenador
-    - Caio
-    Função: Contador
-    - Arthur
-
-
-
-    Funcionários que fazem aniversário no mês 10:
-    - Maria
-    - Miguel
-
-
-
-    Nenhum funcionário faz aniversário no mês 12.
-
-
-
+// TODO verificar uma forma de fazer
+/* 
     Funcionário mais velho:
     - Nome: Heloisa
     - Data de Nascimento: 2003-05-24
-
-
-
-    Funcionários em ordem alfabética:
-    - Alice
-    - Arthur
-    - Caio
-    - Heitor
-    - Helena
-    - Heloisa
-    - Laura
-    - Maria
-    - Miguel
-
-
-
-    Total de salários: R$ 50.189,67
-
-
-
-    Maria - Operador - 1.82 - 18/10/2000
-    Caio - Coordenador - 8.93 - 02/05/1961
-    Miguel - Diretor - 17.35 - 14/10/1988
-    Alice - Recepcionista - 1.44 - 05/01/1995
-    Heitor - Operador - 1.44 - 19/11/1999
-    Arthur - Contador - 3.70 - 31/03/1993
-    Laura - Gerente - 2.74 - 08/07/1994
-    Heloisa - Eletricista - 1.46 - 24/05/2003
-    Helena - Gerente - 2.54 - 02/09/1996
 */
+
 

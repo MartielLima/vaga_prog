@@ -75,9 +75,9 @@ public class GerarFuncionarios {
 
     public Map<String, Object> gerar() throws JsonProcessingException, SQLException {
         List<Funcionario> funcionarios = db.get_funcionarios();
-        if (funcionarios.size() >= 900) {
+        if (funcionarios.size() >= 100) {
             throw new Error(
-                    "Ja existem mais de 900 funcionarios cadastrados. Devido a isto, não e possível criar mais funcionarios de forma automática!"
+                    "Ja existem mais de 100 funcionarios cadastrados. Devido a isto, não e possível criar mais funcionarios de forma automática!"
             );
         }
 
@@ -88,7 +88,7 @@ public class GerarFuncionarios {
 
         int index = 0;
 
-        while (index < 1200) {
+        while (index < 120) {
             String nome = NOMES[random.nextInt(NOMES.length)] + " " + SOBRENOMES[random.nextInt(SOBRENOMES.length)];
             LocalDate dataNascimento = gerarDataNascimento();
             BigDecimal salario = BigDecimal.valueOf(1500 + (random.nextDouble() * 20000));
