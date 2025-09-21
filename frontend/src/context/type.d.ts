@@ -15,6 +15,11 @@ export type LoadContextType = {
     setLoad: (value: boolean) => void;
 };
 
+export type StopHighFetch = {
+    isStopped: boolean,
+  setIsStopped: (value: boolean) => void,
+};
+
 export type SearchContextType = {
     search: string;
     setSearch: (value: string) => void;

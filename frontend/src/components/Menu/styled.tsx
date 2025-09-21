@@ -38,10 +38,17 @@ export const MenuList = styled.ul`
 `;
 
 export const MenuItem = styled.li`
+  display: flex;
+  align-items: center;
+  flex-direction: row;
   padding: 10px 8px;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s;
+
+  p {
+    padding-left: 5px;
+  }
 
   &:hover {
     background-color: #f3f4f6;
