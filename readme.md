@@ -3,7 +3,6 @@
 Aplicação ainda em desenvolvimento, próximos passos:
 
 - Implementar Load nas chamadas de API
-- Mostrar sucesso das requisições da API
 - Função de Aumento para todos os funcionarios
 - Durante a criação dos 1000 usurários, adiar a atualização em tela, assim como adiar as solicitações no bd
 

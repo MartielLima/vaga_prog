@@ -8,6 +8,7 @@ import { FaUsers } from "react-icons/fa";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { useIsStopped } from "../../context/StopHighFetchContext";
 import { useSuccess } from "../../context/SuccessContext";
+import { useState } from "react";
 
 type Props = {
     open: boolean;
@@ -20,6 +21,7 @@ export default function RightMenu({ open, toggleMenu, toggleRelatorio }: Props) 
     const { setSuccess } = useSuccess();
     const { setIsStopped } = useIsStopped();
     const ref = OutsideClick(toggleMenu);
+    const [openSalaryIncreaseMenu, setOpenSalaryIncreaseMenu] = useState(false);
 
     const handleRegisterMultipleUsers = async () => {
         try {
@@ -60,7 +62,7 @@ export default function RightMenu({ open, toggleMenu, toggleRelatorio }: Props) 
                         <HiOutlineDocumentReport />
                         <p>Relatórios</p>
                     </MenuItem>
-                    <MenuItem>
+                    <MenuItem onClick={() => setOpenSalaryIncreaseMenu(true)}>
                         <FaMoneyBillTrendUp />
                         <p>Aumento para todos os funcionarios</p>
                     </MenuItem>
