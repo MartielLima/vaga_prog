@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Header from './components/Header';
 import Table from './components/Table';
 import FormCreateUser from './components/Form/FormCreateUser';
@@ -10,7 +10,6 @@ import { ErrorDetail } from './components/ErrorScream';
 
 import "@fontsource/montserrat/400.css";
 import "@fontsource/montserrat/700.css";
-import BirthdayPersonOfTheMonth from './components/Relatorios/BirthdayPersonOfTheMonth';
 import { useIsStopped } from './context/StopHighFetchContext';
 
 export type ResponseToJSONPropsGetAll = {
@@ -27,6 +26,7 @@ function App() {
   const { errors, setErrors } = useError();
   const { isStopped } = useIsStopped();
 
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const deleteError = useCallback((index: number) => {
     setErrors(prev => prev.filter((_, i) => i !== index));
   }, [setErrors])
@@ -54,6 +54,7 @@ function App() {
     }
   };
 
+
   useEffect(() => {
     if (isStopped) return;
     if (errors.length > 0) {
@@ -61,13 +62,12 @@ function App() {
       setViewError(errors[lastErrorIndex]);
       deleteError(lastErrorIndex);
       setShowPopup(true);
-      let timeout: ReturnType<typeof setTimeout> | null = null;
-      timeout = setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         setViewError(null);
-        timeout = null;
+        timeoutRef.current = null;
       }, 10000)
     };
-  }, [errors, setViewError, deleteError, setShowPopup])
+  }, [errors, setViewError, deleteError, setShowPopup, timeoutRef, isStopped])
 
   return (
     <>
@@ -85,6 +85,7 @@ function App() {
             setViewError={setViewError}
             setShowPopup={setShowPopup}
             onOpenDetail={(index) => setDetailError(index)}
+            timeout={timeoutRef}
           />
         </>
       )}

@@ -2,12 +2,14 @@ import { Form, Overlay, ButtonDelete } from "./styled"
 import { IoMdClose } from "react-icons/io";
 import { useError } from "../../context/ErrorContext"
 import type { AppError } from "../../context/type"
+import { useSuccess } from "../../context/SuccessContext";
 
 function FormComponent({ infos, setDeleteInfos }: {
   infos: { id: number, name: string },
   setDeleteInfos: React.Dispatch<React.SetStateAction<{ id: number, name: string } | null>>
 }) {
   const { errors, setErrors } = useError();
+  const { setSuccess } = useSuccess()
   const deleteUser = async (id: number) => {
     try {
       const response = await fetch(`http://127.0.0.1:8085/${id}`, {
@@ -21,13 +23,15 @@ function FormComponent({ infos, setDeleteInfos }: {
         const data: AppError = await response.json();
         const newErrorList: AppError[] = [...errors, data]
         setErrors(newErrorList);
+      } else {
+        setSuccess(true)
       }
 
     } catch (err: unknown) {
       if (err instanceof Error) {
-      const newErrorList: AppError[] = [...errors, { message: "Erro ao deletar usuário:", infos: err.message }]
-      setErrors(newErrorList);
-      } 
+        const newErrorList: AppError[] = [...errors, { message: "Erro ao deletar usuário:", infos: err.message }]
+        setErrors(newErrorList);
+      }
       return null;
     }
   };

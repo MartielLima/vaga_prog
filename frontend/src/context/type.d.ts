@@ -15,6 +15,11 @@ export type LoadContextType = {
     setLoad: (value: boolean) => void;
 };
 
+export type SuccessContextType = {
+    success: boolean;
+    setSuccess: (value: boolean) => void;
+};
+
 export type StopHighFetch = {
     isStopped: boolean,
   setIsStopped: (value: boolean) => void,

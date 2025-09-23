@@ -6,10 +6,12 @@ import { useError } from "../../context/ErrorContext";
 import type { AppError } from "../../context/type";
 import type { ResponseToJSONProps } from "./type";
 import type { Funcionario } from "../Table/type";
+import { useSuccess } from "../../context/SuccessContext";
 
 function FormComponent({ id, setEditandoId }: { id: number, setEditandoId: React.Dispatch<React.SetStateAction<number | null>> }) {
   const { errors, setErrors } = useError();
   const [valor, setValor] = useState("R$ 0,00");
+  const { setSuccess } = useSuccess()
   const [formData, setFormData] = useState<Funcionario>({
     id: 0,
     nome: "",
@@ -59,6 +61,7 @@ function FormComponent({ id, setEditandoId }: { id: number, setEditandoId: React
         funcao: user.funcao
       })
     });
+    setSuccess(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {

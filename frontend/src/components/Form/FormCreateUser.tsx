@@ -5,6 +5,8 @@ import ErrorComponent from "../ErrorComponent";
 import CalculateAge from "../../Util/CalculateAge";
 import { useError } from "../../context/ErrorContext"
 import type { AppError } from "../../context/type"
+import { useSuccess } from "../../context/SuccessContext";
+import formatDate from "../../Util/formatDate";
 
 //{ id, setEditandoId }: { id: number, setEditandoId: React.Dispatch<React.SetStateAction<number | null>> }
 
@@ -18,6 +20,15 @@ function FormCreateUser({ setCreateId }: { setCreateId: React.Dispatch<React.Set
   const [createUserError, setCreateUserError] = useState<string[]>([]);
   const [valor, setValor] = useState("R$ 0,00");
   const { errors, setErrors } = useError();
+  const { setSuccess } = useSuccess()
+
+  const today = new Date();
+  const year = today.getFullYear();
+  const mouth = today.getMonth();
+  const day = today.getDay()
+  const minDate = formatDate(new Date(year - 90, mouth, day));
+  const maxDate = formatDate(new Date(year - 16, mouth, day));
+
 
   const setUserIntoDB = async (user: typeof formData) => {
     try {
@@ -28,6 +39,8 @@ function FormCreateUser({ setCreateId }: { setCreateId: React.Dispatch<React.Set
         },
         body: JSON.stringify(user)
       });
+
+      setSuccess(true)
     } catch (err) {
       if (err instanceof Error) {
         const newErrorList: AppError[] = [...errors, { message: "Erro ao enviar usuário:", infos: err.message }]
@@ -104,7 +117,7 @@ function FormCreateUser({ setCreateId }: { setCreateId: React.Dispatch<React.Set
         <input type="text" value={formData.nome} onChange={(e) => setFormData({ ...formData, nome: e.target.value })} />
 
         <label>Data de Nascimento</label>
-        <input type="date" value={formData.dataNascimento} onChange={(e) => setFormData({ ...formData, dataNascimento: e.target.value })} />
+        <input type="date" value={formData.dataNascimento} onChange={(e) => setFormData({ ...formData, dataNascimento: e.target.value })} min={minDate} max={maxDate} />
 
         <label>Salário</label>
         <input type="text" value={valor} onChange={handleChange} step="0.01" placeholder="R$ 0,00" />
