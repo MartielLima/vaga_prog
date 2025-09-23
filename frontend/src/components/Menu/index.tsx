@@ -7,6 +7,7 @@ import { HiOutlineDocumentReport } from "react-icons/hi";
 import { FaUsers } from "react-icons/fa";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { useIsStopped } from "../../context/StopHighFetchContext";
+import { useSuccess } from "../../context/SuccessContext";
 
 type Props = {
     open: boolean;
@@ -16,6 +17,7 @@ type Props = {
 
 export default function RightMenu({ open, toggleMenu, toggleRelatorio }: Props) {
     const { errors, setErrors } = useError();
+    const { setSuccess } = useSuccess();
     const { setIsStopped } = useIsStopped();
     const ref = OutsideClick(toggleMenu);
 
@@ -32,6 +34,8 @@ export default function RightMenu({ open, toggleMenu, toggleRelatorio }: Props) 
             if (!response.ok) {
                 const data: AppError = await response.json();
                 setErrors(prev => [...prev, data]);
+            } else {
+                setSuccess(true)
             }
             setIsStopped(false)
         } catch (err) {

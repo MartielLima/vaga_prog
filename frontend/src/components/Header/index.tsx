@@ -7,6 +7,9 @@ import { useState } from 'react';
 import RightMenu from '../Menu';
 import RightMenuFilter from '../Menu/menuFilter';
 import Relatorio from "../../components/Relatorios";
+import SuccessMessage from '../Success';
+import { useSuccess } from '../../context/SuccessContext';
+import { AnimatePresence } from "framer-motion";
 
 export default function Header({ setCreateId, fetchData }:
   {
@@ -15,6 +18,7 @@ export default function Header({ setCreateId, fetchData }:
   const [openMenu, setOpenMenu] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
   const [showRelatorio, setShowRelatorio] = useState(false);
+  const { success, setSuccess } = useSuccess()
 
   const toggleRelatorio = () => {
     setShowRelatorio(!showRelatorio)
@@ -25,6 +29,21 @@ export default function Header({ setCreateId, fetchData }:
 
   return (
     <>
+      <AnimatePresence>
+        {success && (
+          <SuccessMessage
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4 }}
+            onAnimationComplete={() => {
+              if (success) {
+                setTimeout(() => setSuccess(false), 2000);
+              }
+            }}
+          />
+        )}
+      </AnimatePresence>
       <Nav>
         <ButtonImg onClick={() => fetchData()}>
           <div>
