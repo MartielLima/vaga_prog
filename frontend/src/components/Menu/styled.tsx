@@ -18,6 +18,18 @@ export const Sidebar = styled.div<{ open: boolean }>`
   z-index: 1000;
 `;
 
+export const ContainerItem = styled.li<{ open: boolean }>`
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  ${(props) => {
+    return (
+      props.open ? "border: 1px #dddddd solid; background-color: #f3f4f6;padding: 10px" : ""
+    )
+  }
+  }
+`
+
 export const MenuTitle = styled.h2`
   margin-bottom: 20px;
   font-size: 1.5rem;
@@ -37,7 +49,7 @@ export const MenuList = styled.ul`
   margin: 0;
 `;
 
-export const MenuItem = styled.li`
+export const MenuItem = styled.div`
   display: flex;
   align-items: center;
   flex-direction: row;
