@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 export const Container = styled(motion.div) <React.ComponentProps<typeof motion.div>>`
   position: fixed;
   top: 0px;
-  right: 8.5rem;
+  left: 10.5rem;
   height: 80px;
   background-color: limegreen;
   cursor: none;

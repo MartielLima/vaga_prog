@@ -1,4 +1,4 @@
-import { Container, Sidebar, MenuTitle, MenuList, MenuItem } from "./styled"
+import { Container, Sidebar, MenuTitle, MenuList, MenuItem, ContainerItem } from "./styled"
 import OutsideClick from "../../hooks/OutsideClick";
 import type { AppError } from "../../context/type";
 import { useError } from "../../context/ErrorContext";
@@ -8,6 +8,8 @@ import { FaUsers } from "react-icons/fa";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { useIsStopped } from "../../context/StopHighFetchContext";
 import { useSuccess } from "../../context/SuccessContext";
+import { useState } from "react";
+import SalaryIncrement from "./SalaryIncrement"
 
 type Props = {
     open: boolean;
@@ -20,6 +22,9 @@ export default function RightMenu({ open, toggleMenu, toggleRelatorio }: Props) 
     const { setSuccess } = useSuccess();
     const { setIsStopped } = useIsStopped();
     const ref = OutsideClick(toggleMenu);
+    const [openSalaryIncrement, setOpenSalaryIncrement] = useState(false);
+
+    const toggleSalaryIncrement = () => setOpenSalaryIncrement(!openSalaryIncrement);
 
     const handleRegisterMultipleUsers = async () => {
         try {
@@ -52,18 +57,25 @@ export default function RightMenu({ open, toggleMenu, toggleRelatorio }: Props) 
             <Sidebar open={open}>
                 <MenuTitle>Menu</MenuTitle>
                 <MenuList>
-                    <MenuItem onClick={handleRegisterMultipleUsers} >
-                        <FaUsers />
-                        <p>Cadastrar vários Usuarios</p>
-                    </MenuItem>
-                    <MenuItem onClick={toggleRelatorio}>
-                        <HiOutlineDocumentReport />
-                        <p>Relatórios</p>
-                    </MenuItem>
-                    <MenuItem>
-                        <FaMoneyBillTrendUp />
-                        <p>Aumento para todos os funcionarios</p>
-                    </MenuItem>
+                    <ContainerItem open={false}>
+                        <MenuItem onClick={handleRegisterMultipleUsers} >
+                            <FaUsers />
+                            <p>Cadastrar vários Usuarios</p>
+                        </MenuItem>
+                    </ContainerItem>
+                    <ContainerItem open={false}>
+                        <MenuItem onClick={toggleRelatorio}>
+                            <HiOutlineDocumentReport />
+                            <p>Relatórios</p>
+                        </MenuItem>
+                    </ContainerItem>
+                    <ContainerItem open={openSalaryIncrement}>
+                        <MenuItem onClick={toggleSalaryIncrement}>
+                            <FaMoneyBillTrendUp />
+                            <p>Aumento para todos os funcionarios</p>
+                        </MenuItem>
+                        {openSalaryIncrement && <SalaryIncrement toggleSalaryIncrement={toggleSalaryIncrement} />}
+                    </ContainerItem>
                 </MenuList>
             </Sidebar>
         </Container>
